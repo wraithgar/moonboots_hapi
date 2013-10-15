@@ -42,13 +42,13 @@ module.exports = {
       var clientApp = new Moonboots(options);
       server.route({
         method: 'get',
-        path: '/' + encodeURIComponent(clientApp.jsFileName()) + '*.js',
+        path: '/' + encodeURIComponent(clientApp.jsFileName()),
         handler: jsHandler(clientApp),
         config: routeConfig('text/javascript; charset=utf-8', clientApp)
       });
       server.route({
         method: 'get',
-        path: '/' + encodeURIComponent(clientApp.jsFileName()) + '*.css',
+        path: '/' + encodeURIComponent(clientApp.cssFileName()),
         handler: cssHandler(clientApp),
         config: routeConfig('text/css; charset=utf-8', clientApp)
       });
