@@ -19,11 +19,46 @@ var moonboots_config = {
     ],
     stylesheets: [
         __dirname + '/styles.css'
-    ],
+    ]
 };
 
 var server = new Hapi.Server();
 
+server.pack.require({moonboots_hapi: moonboots_config}, function (er) {
+    server.start();
+});
+```
+
+## Additional options
+
+If your app has something like auth you can pass in a hapi parameter to
+the moonboots config and it will be added to the _config_ portion of the
+client app request handler
+
+```js
+var Hapi = require('hapi');
+var HapiSession = require('hapi-session');
+
+var moonboots_config = {
+    main: __dirname + '/sample/app/app.js',
+    developmentMode: false,
+    libraries: [
+        __dirname + '/sample/libraries/jquery.js'
+    ],
+    stylesheets: [
+        __dirname + '/styles.css'
+    ],
+    hapi: {
+        auth: 'session',
+    }
+};
+
+var server = new Hapi.Server();
+server.auth('session', {
+    implementation: new HapiSession(server, session_options)
+});
+
 server.pack.require({moonboots_hapi: moonboots_config}, function (err) {
     server.start();
 });
+```
