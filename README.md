@@ -1,7 +1,6 @@
-Hapi plugin for moonboots
 # moonboots_hapi
 
-Moonboots plugin that allows it to serve files using a hapi server
+Moonboots plugin that allows it to serve files using a hapi server.
 
 ## How to use:
 
@@ -25,6 +24,6 @@ var moonboots_config = {
 
 var server = new Hapi.Server();
 
-server.pack.require({moonboots_hapi: moonboots_config}, function (er) {
+server.pack.require({moonboots_hapi: moonboots_config}, function (err) {
     server.start();
 });
