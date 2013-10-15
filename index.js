@@ -1,11 +1,9 @@
 var Moonboots = require('moonboots');
-function routeConfig(contentType, clientApp, extend) {
+function routeConfig(clientApp, extend) {
     var config = {};
     var clientHapiConfig = clientApp.getConfig('hapi');
 
     if (extend && clientHapiConfig) config = clientHapiConfig;
-
-    config.payload = {override: contentType};
 
     if (!clientApp.getConfig('developmentMode')) {
         config.cache = {
@@ -15,24 +13,26 @@ function routeConfig(contentType, clientApp, extend) {
     return config;
 }
 
-function jsHandler (clientApp) {
+function jsHandler(clientApp) {
     return function(request) {
-        clientApp.sourceCode(function _getSourceCode(source) {
-            request.reply(source);
+        clientApp.jsSource(function _getJsSource(err, js) {
+            request.reply(err || js).header('content-type', 'text/javascript; charset=utf-8');
         });
     };
 }
 
-function cssHandler (clientApp) {
-    return function (request) {
-        request.reply(clientApp.css());
+function cssHandler(clientApp) {
+    return function(request) {
+        clientApp.cssSource(function _getCssSource(err, css) {
+            request.reply(err || css).header('content-type', 'text/css; charset=utf-8');
+        });
     };
 }
 
 function mainHandler(clientApp) {
       return function (request) {
-        clientApp.getResult('html', function(html) {
-            request.reply(html);
+        clientApp.getResult('html', function(err, html) {
+            request.reply(err || html);
         });
       };
 }
@@ -44,19 +44,19 @@ module.exports = {
             method: 'get',
             path: '/' + encodeURIComponent(clientApp.jsFileName()),
             handler: jsHandler(clientApp),
-            config: routeConfig('text/javascript; charset=utf-8', clientApp)
+            config: routeConfig(clientApp)
         });
         server.route({
             method: 'get',
             path: '/' + encodeURIComponent(clientApp.cssFileName()),
             handler: cssHandler(clientApp),
-            config: routeConfig('text/css; charset=utf-8', clientApp)
+            config: routeConfig(clientApp)
         });
         server.route({
             method: 'get',
             path: '/{client*}',
             handler: mainHandler(clientApp),
-            config: routeConfig('text/javascript; charset=utf-8', clientApp, true)
+            config: routeConfig(clientApp, true)
         });
         next();
     }
