@@ -14,7 +14,7 @@ function routeConfig(clientApp, extend) {
 }
 
 function jsHandler(clientApp) {
-    return function(request) {
+    return function (request) {
         clientApp.jsSource(function _getJsSource(err, js) {
             request.reply(err || js).header('content-type', 'text/javascript; charset=utf-8');
         });
@@ -22,7 +22,7 @@ function jsHandler(clientApp) {
 }
 
 function cssHandler(clientApp) {
-    return function(request) {
+    return function (request) {
         clientApp.cssSource(function _getCssSource(err, css) {
             request.reply(err || css).header('content-type', 'text/css; charset=utf-8');
         });
@@ -30,15 +30,15 @@ function cssHandler(clientApp) {
 }
 
 function mainHandler(clientApp) {
-      return function (request) {
-        clientApp.getResult('html', function(err, html) {
+    return function (request) {
+        clientApp.getResult('html', function (err, html) {
             request.reply(err || html);
         });
-      };
+    };
 }
 
 module.exports = {
-    register: function(server, options, next) {
+    register: function (server, options, next) {
         var clientApp = new Moonboots(options);
         server.route({
             method: 'get',
@@ -54,7 +54,7 @@ module.exports = {
         });
         server.route({
             method: 'get',
-            path: '/{client*}',
+            path: clientApp.getConfig('appPath') || '/{client*}',
             handler: mainHandler(clientApp),
             config: routeConfig(clientApp, true)
         });

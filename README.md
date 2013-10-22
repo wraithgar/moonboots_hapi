@@ -29,11 +29,15 @@ server.pack.require({moonboots_hapi: moonboots_config}, function (er) {
 });
 ```
 
+
 ## Additional options
 
 If your app has something like auth you can pass in a hapi parameter to
 the moonboots config and it will be added to the _config_ portion of the
 client app request handler
+
+The app by default will serve on all requests unless you pass in an
+_appPath_ option
 
 ```js
 var Hapi = require('hapi');
@@ -50,10 +54,18 @@ var moonboots_config = {
     ],
     hapi: {
         auth: 'session',
-    }
+    },
+    appPath: '/app'
 };
 
 var server = new Hapi.Server();
+server.route({
+    method: 'get',
+    path: '/',
+    handler: function () {
+        this.reply.redirect('/app').message('Redirecting to clientside app...');
+    }
+});
 server.auth('session', {
     implementation: new HapiSession(server, session_options)
 });
@@ -62,3 +74,12 @@ server.pack.require({moonboots_hapi: moonboots_config}, function (err) {
     server.start();
 });
 ```
+
+## Test
+
+For now, run sample.js and make sure you have a grey (#ccc) background and the
+"Woo! View source to see what rendered me" message in your window.
+
+#License
+
+MIT
