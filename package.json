@@ -1,7 +1,7 @@
 {
     "name": "moonboots_hapi",
     "description": "Moonboots plugin that allows it to serve files using a hapi server",
-    "version": "0.2.2",
+    "version": "0.2.3",
     "repository": "https://github.com/wraithgar/moonboots-hapi",
     "dependencies": {
       "moonboots": "~1.2.x"

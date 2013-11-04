@@ -40,24 +40,26 @@ function mainHandler(clientApp) {
 module.exports = {
     register: function (server, options, next) {
         var clientApp = new Moonboots(options);
-        server.route({
-            method: 'get',
-            path: '/' + encodeURIComponent(clientApp.jsFileName()),
-            handler: jsHandler(clientApp),
-            config: routeConfig(clientApp)
+        clientApp.on('ready', function () {
+            server.route({
+                method: 'get',
+                path: '/' + encodeURIComponent(clientApp.jsFileName()),
+                handler: jsHandler(clientApp),
+                config: routeConfig(clientApp)
+            });
+            server.route({
+                method: 'get',
+                path: '/' + encodeURIComponent(clientApp.cssFileName()),
+                handler: cssHandler(clientApp),
+                config: routeConfig(clientApp)
+            });
+            server.route({
+                method: 'get',
+                path: clientApp.getConfig('appPath') || '/{client*}',
+                handler: mainHandler(clientApp),
+                config: routeConfig(clientApp, true)
+            });
+            next();
         });
-        server.route({
-            method: 'get',
-            path: '/' + encodeURIComponent(clientApp.cssFileName()),
-            handler: cssHandler(clientApp),
-            config: routeConfig(clientApp)
-        });
-        server.route({
-            method: 'get',
-            path: clientApp.getConfig('appPath') || '/{client*}',
-            handler: mainHandler(clientApp),
-            config: routeConfig(clientApp, true)
-        });
-        next();
     }
 };
