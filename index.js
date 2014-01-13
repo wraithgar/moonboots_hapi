@@ -1,64 +1,75 @@
+var clientApp, HapiError;
 var Moonboots = require('moonboots');
-function routeConfig(clientApp, extend) {
-    var config = {};
-    var clientHapiConfig = clientApp.getConfig('hapi');
 
-    if (extend && clientHapiConfig) config = clientHapiConfig;
-
-    if (!clientApp.getConfig('developmentMode')) {
-        config.cache = {
-            expiresIn: clientApp.getConfig('cachePeriod')
-        };
-    }
-    return config;
-}
-
-function jsHandler(clientApp) {
-    return function (request) {
-        clientApp.jsSource(function _getJsSource(err, js) {
-            request.reply(err || js).header('content-type', 'text/javascript; charset=utf-8');
+var exports = module.exports = {
+    jsHandler: function (request, reply) {
+        if (!clientApp) {
+            return reply(new HapiError.internal('No clientApp'));
+        }
+        clientApp.jsSource(function _getJsSource(err, css) {
+            if (err) {
+                return reply(new HapiError.internal('No js source'));
+            }
+            reply(css).header('content-type', 'text/javascript; charset=utf-8');
         });
-    };
-}
-
-function cssHandler(clientApp) {
-    return function (request) {
+    },
+    cssHandler: function (request, reply) {
+        if (!clientApp) {
+            return reply(new HapiError.internal('No clientApp'));
+        }
         clientApp.cssSource(function _getCssSource(err, css) {
-            request.reply(err || css).header('content-type', 'text/css; charset=utf-8');
+            if (err) {
+                return reply(new HapiError.internal('No css source'));
+            }
+            reply(css).header('content-type', 'text/css; charset=utf-8');
         });
-    };
-}
-
-function mainHandler(clientApp) {
-    return function (request) {
-        clientApp.getResult('html', function (err, html) {
-            request.reply(err || html);
+    },
+    mainHandler: function (request, reply) {
+        if (!clientApp) {
+            return reply(new HapiError.internal('No clientApp'));
+        }
+        clientApp.getResult('html', function _getHtmlResult(err, html) {
+            if (err) {
+                return reply(new HapiError.internal('No html result'));
+            }
+            reply(html);
         });
-    };
-}
-
-module.exports = {
-    register: function (server, options, next) {
-        var clientApp = new Moonboots(options);
+    },
+    register: function (plugin, options, next) {
+        var extendedConfig;
+        var config = {};
+        HapiError = plugin.hapi.Error;
+        clientApp = new Moonboots(options);
+        extendedConfig = clientApp.getConfig('hapi') || {};
+        if (!clientApp.getConfig('developmentMode')) {
+            config.cache = {
+                expiresIn: clientApp.getConfig('cachePeriod')
+            };
+            extendedConfig.cache = extendedConfig.cache || {};
+            extendedConfig.cache.expiresIn = clientApp.getConfig('cachePeriod');
+        }
         clientApp.on('ready', function () {
-            server.route({
+            plugin.route({
                 method: 'get',
                 path: '/' + encodeURIComponent(clientApp.jsFileName()),
-                handler: jsHandler(clientApp),
-                config: routeConfig(clientApp)
+                handler: exports.jsHandler,
+                config: config
             });
-            server.route({
+            plugin.route({
                 method: 'get',
                 path: '/' + encodeURIComponent(clientApp.cssFileName()),
-                handler: cssHandler(clientApp),
-                config: routeConfig(clientApp)
+                handler: exports.cssHandler,
+                config: config
             });
-            server.route({
+            plugin.route({
                 method: 'get',
                 path: clientApp.getConfig('appPath') || '/{client*}',
-                handler: mainHandler(clientApp),
-                config: routeConfig(clientApp, true)
+                handler: exports.mainHandler,
+                config: extendedConfig
             });
+            plugin.helper('jsHandler', exports.jsHandler);
+            plugin.helper('cssHandler', exports.cssHandler);
+            plugin.helper('mainHandler', exports.mainHandler);
             next();
         });
     }

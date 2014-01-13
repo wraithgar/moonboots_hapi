@@ -1,13 +1,23 @@
 {
+    "author": "Michael Garvin <gar@comrade.us>",
     "name": "moonboots_hapi",
     "description": "Moonboots plugin that allows it to serve files using a hapi server",
-    "version": "0.2.3",
-    "repository": "https://github.com/wraithgar/moonboots-hapi",
+    "version": "1.0.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/wraithgar/moonboots-hapi"
+    },
+    "bugs": {
+        "email": "gar@comrade.us",
+        "url": "https://github.com/wraithgar/moonboots-hapi/issues"
+    },
+    "main": "index.js",
     "dependencies": {
       "moonboots": "~1.2.x"
     },
     "devDependencies": {
-      "hapi" : "1.x.x",
-      "precommit-hook": "0.3.8"
-    }
+      "hapi" : "2.x.x",
+      "precommit-hook": "0.3.9"
+    },
+    "license": "MIT"
 }

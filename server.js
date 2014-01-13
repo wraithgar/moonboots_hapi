@@ -15,8 +15,8 @@ var server = new Hapi.Server('localhost', 3000);
 server.route({
     method: 'get',
     path: '/',
-    handler: function () {
-        this.reply.redirect('/app').message('Redirecting to clientside app...');
+    handler: function (request, reply) {
+        reply('Redirecting to clientside app...').redirect('/app');
     }
 });
 
