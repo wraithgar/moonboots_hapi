@@ -13,10 +13,10 @@
   },
   "main": "index.js",
   "dependencies": {
-    "moonboots": "~1.2.x"
+    "moonboots": "~1.2.x",
+    "async": "~0.2.x"
   },
   "devDependencies": {
-    "async": "0.2.x",
     "hapi": "2.x.x",
     "nodeunit": "0.8.x",
     "precommit-hook": "0.3.x"
