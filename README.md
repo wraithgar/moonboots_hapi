@@ -29,7 +29,6 @@ server.pack.require({moonboots_hapi: moonboots_config}, function (er) {
 });
 ```
 
-
 ## Additional options
 
 If your app has something like auth you can pass in a hapi parameter to
@@ -75,9 +74,29 @@ server.pack.require({moonboots_hapi: moonboots_config}, function (err) {
 });
 ```
 
+## Multiple mooonboots on one server
+
+You can register multiple moonboots apps for a single hapi server like so:
+
+1. Be sure to use hapi 2.x (won't work on 1.x)
+2. Pass in an array of moonboots configs instead of a single config.
+3. Make sure that each config provides unique `appPath`, `jsFileName`, and `cssFilename` or hapi will complain that the paths conflict.
+
+Example of registering multiple apps:
+
+```js
+server.pack.require({moonboots_hapi: [moonboots_config1, moonboots_config2]}, function (er) {
+    server.start();
+});
+```
+
 ## Test
 
-For now, run sample.js and make sure you have a grey (#ccc) background and the
+Run `npm test`
+
+## Sample
+
+Run `npm start` and make sure you have a grey (#ccc) background and the
 "Woo! View source to see what rendered me" message in your window.
 
 #License
