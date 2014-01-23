@@ -2,7 +2,7 @@
   "author": "Michael Garvin <gar@comrade.us>",
   "name": "moonboots_hapi",
   "description": "Moonboots plugin that allows it to serve files using a hapi server",
-  "version": "1.0.1",
+  "version": "1.1.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/wraithgar/moonboots-hapi"

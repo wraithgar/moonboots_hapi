@@ -1,6 +1,7 @@
 # moonboots_hapi
 
 Moonboots plugin that allows it to serve files using a hapi server.
+Be sure to use hapi 2.x (won't work on 1.x, see legacy branch for 1.x)
 
 ## How to use:
 
@@ -78,9 +79,8 @@ server.pack.require({moonboots_hapi: moonboots_config}, function (err) {
 
 You can register multiple moonboots apps for a single hapi server like so:
 
-1. Be sure to use hapi 2.x (won't work on 1.x)
-2. Pass in an array of moonboots configs instead of a single config.
-3. Make sure that each config provides unique `appPath`, `jsFileName`, and `cssFilename` or hapi will complain that the paths conflict.
+1. Pass in an array of moonboots configs instead of a single config.
+2. Make sure that each config provides unique `appPath`, `jsFileName`, and `cssFilename` or hapi will complain that the paths conflict.
 
 Example of registering multiple apps:
 
