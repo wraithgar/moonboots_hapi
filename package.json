@@ -1,5 +1,6 @@
 {
-  "author": "Michael Garvin <gar@comrade.us>",
+  "author": "Michael Garvin <gar@comrade.us> https://github.com/wraithgar",
+  "contributors": ["Henrik Joreteg <henrik@andyet.net> https://github.com/henrikjoreteg"],
   "name": "moonboots_hapi",
   "description": "Moonboots plugin that allows it to serve files using a hapi server",
   "version": "1.1.1",
