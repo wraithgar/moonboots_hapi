@@ -1,46 +1,15 @@
-var clientApp, HapiError;
 var Moonboots = require('moonboots');
+var async = require('async');
 
-var exports = module.exports = {
-    jsHandler: function (request, reply) {
-        if (!clientApp) {
-            return reply(new HapiError.internal('No clientApp'));
-        }
-        clientApp.jsSource(function _getJsSource(err, css) {
-            if (err) {
-                return reply(new HapiError.internal('No js source'));
-            }
-            reply(css).header('content-type', 'text/javascript; charset=utf-8');
-        });
-    },
-    cssHandler: function (request, reply) {
-        if (!clientApp) {
-            return reply(new HapiError.internal('No clientApp'));
-        }
-        clientApp.cssSource(function _getCssSource(err, css) {
-            if (err) {
-                return reply(new HapiError.internal('No css source'));
-            }
-            reply(css).header('content-type', 'text/css; charset=utf-8');
-        });
-    },
-    mainHandler: function (request, reply) {
-        if (!clientApp) {
-            return reply(new HapiError.internal('No clientApp'));
-        }
-        clientApp.getResult('html', function _getHtmlResult(err, html) {
-            if (err) {
-                return reply(new HapiError.internal('No html result'));
-            }
-            reply(html);
-        });
-    },
-    register: function (plugin, options, next) {
-        var extendedConfig;
+
+exports.register = function (plugin, options, next) {
+    var HapiError = plugin.hapi.Error;
+    var clientApps = (options instanceof Array) ? options : [options];
+
+    async.forEach(clientApps, function (options, cb) {
+        var clientApp = new Moonboots(options);
+        var extendedConfig = clientApp.getConfig('hapi') || {};
         var config = {};
-        HapiError = plugin.hapi.Error;
-        clientApp = new Moonboots(options);
-        extendedConfig = clientApp.getConfig('hapi') || {};
         if (!clientApp.getConfig('developmentMode')) {
             config.cache = {
                 expiresIn: clientApp.getConfig('cachePeriod')
@@ -52,25 +21,49 @@ var exports = module.exports = {
             plugin.route({
                 method: 'get',
                 path: '/' + encodeURIComponent(clientApp.jsFileName()),
-                handler: exports.jsHandler,
+                handler: function _jsFileHandler(request, reply) {
+                    clientApp.jsSource(function _getJsSource(err, css) {
+                        if (err) {
+                            return reply(new HapiError.internal('No js source'));
+                        }
+                        reply(css).header('content-type', 'text/javascript; charset=utf-8');
+                    });
+                },
                 config: config
             });
             plugin.route({
                 method: 'get',
                 path: '/' + encodeURIComponent(clientApp.cssFileName()),
-                handler: exports.cssHandler,
+                handler: function _cssFileHandler(request, reply) {
+                    clientApp.cssSource(function _getCssSource(err, css) {
+                        if (err) {
+                            return reply(new HapiError.internal('No css source'));
+                        }
+                        reply(css).header('content-type', 'text/css; charset=utf-8');
+                    });
+                },
                 config: config
             });
             plugin.route({
                 method: 'get',
                 path: clientApp.getConfig('appPath') || '/{client*}',
-                handler: exports.mainHandler,
+                handler: function _appHandler(request, reply) {
+                    clientApp.getResult('html', function _getHtmlResult(err, html) {
+                        if (err) {
+                            return reply(new HapiError.internal('No html result'));
+                        }
+                        reply(html);
+                    });
+                },
                 config: extendedConfig
             });
-            plugin.helper('jsHandler', exports.jsHandler);
-            plugin.helper('cssHandler', exports.cssHandler);
-            plugin.helper('mainHandler', exports.mainHandler);
-            next();
+            cb();
         });
-    }
+    }, function () {
+        // expose all apps to other handlers
+        plugin.helper('getMoonbootsApps', function () {
+            return clientApps;
+        });
+        next();
+    });
 };
