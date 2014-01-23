@@ -39,6 +39,9 @@ client app request handler
 The app by default will serve on all requests unless you pass in an
 _appPath_ option
 
+js and css paths will default to _appPath_ if it is defined, and will
+default to _app.js_ and _app.css_ respectively otherwise.
+
 ```js
 var Hapi = require('hapi');
 var HapiSession = require('hapi-session');
