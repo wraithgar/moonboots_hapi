@@ -1,8 +1,5 @@
 var Hapi = require('hapi');
 var moonboots_options = {
-    appPath: '/app',
-    jsFileName: 'moonboots-hapi-js',
-    cssFileName: 'moonboots-hapi-css',
     main: __dirname + '/sample/app/app.js',
     developmentMode: true,
     stylesheets: [
@@ -12,13 +9,13 @@ var moonboots_options = {
 
 var server = new Hapi.Server('localhost', 3000);
 
-server.route({
-    method: 'get',
-    path: '/',
-    handler: function (request, reply) {
-        reply('Redirecting to clientside app...').redirect('/app');
-    }
-});
+//server.route({
+    //method: 'get',
+    //path: '/',
+    //handler: function (request, reply) {
+        //reply('Redirecting to clientside app...').redirect('/app');
+    //}
+//});
 
 server.pack.require({ '.': moonboots_options }, function (err) {
     if (err) throw err;

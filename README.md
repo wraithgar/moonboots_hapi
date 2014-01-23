@@ -80,7 +80,7 @@ server.pack.require({moonboots_hapi: moonboots_config}, function (err) {
 You can register multiple moonboots apps for a single hapi server like so:
 
 1. Pass in an array of moonboots configs instead of a single config.
-2. Make sure that each config provides unique `appPath`, `jsFileName`, and `cssFilename` or hapi will complain that the paths conflict.
+2. Make sure that each config provides unique `appPath` or hapi will complain that the paths conflict.
 
 Example of registering multiple apps:
 

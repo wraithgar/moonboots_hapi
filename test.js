@@ -8,4 +8,4 @@ if (process.env.NODE_ENV !== 'test') {
     process.exit(1);
 }
 
-reporter.run(['./tests/routes.js', './tests/multiapp.js']);
+reporter.run(['./tests/routes.js', './tests/multiapp.js', './tests/defaults.js']);
