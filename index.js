@@ -21,7 +21,7 @@ exports.register = function (plugin, options, next) {
             plugin.route({
                 method: 'get',
                 path: '/' + encodeURIComponent(clientApp.jsFileName()),
-                handler: function (request, reply) {
+                handler: function _jsFileHandler(request, reply) {
                     clientApp.jsSource(function _getJsSource(err, css) {
                         if (err) {
                             return reply(new HapiError.internal('No js source'));
@@ -34,7 +34,7 @@ exports.register = function (plugin, options, next) {
             plugin.route({
                 method: 'get',
                 path: '/' + encodeURIComponent(clientApp.cssFileName()),
-                handler: function (request, reply) {
+                handler: function _cssFileHandler(request, reply) {
                     clientApp.cssSource(function _getCssSource(err, css) {
                         if (err) {
                             return reply(new HapiError.internal('No css source'));
@@ -47,7 +47,7 @@ exports.register = function (plugin, options, next) {
             plugin.route({
                 method: 'get',
                 path: clientApp.getConfig('appPath') || '/{client*}',
-                handler: function (request, reply) {
+                handler: function _appHandler(request, reply) {
                     clientApp.getResult('html', function _getHtmlResult(err, html) {
                         if (err) {
                             return reply(new HapiError.internal('No html result'));
