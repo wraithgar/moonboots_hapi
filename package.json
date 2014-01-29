@@ -3,7 +3,7 @@
   "contributors": ["Henrik Joreteg <henrik@andyet.net> https://github.com/henrikjoreteg"],
   "name": "moonboots_hapi",
   "description": "Moonboots plugin that allows it to serve files using a hapi server",
-  "version": "1.2.1",
+  "version": "1.3.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/wraithgar/moonboots-hapi"
@@ -14,8 +14,8 @@
   },
   "main": "index.js",
   "dependencies": {
-    "moonboots": "~1.2.x",
-    "async": "~0.2.x"
+    "async": "~0.2.x",
+    "moonboots": "~1.2.x"
   },
   "devDependencies": {
     "hapi": "2.x.x",

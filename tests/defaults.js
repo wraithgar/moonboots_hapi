@@ -92,5 +92,21 @@ module.exports = {
             test.equal(res.payload, cssSource);
             test.done();
         });
+    },
+    getMoonbootsConfigs: function (test) {
+        test.expect(2);
+        server.plugins.moonboots_hapi.getMoonbootsConfigs(function (configs) {
+            test.equal(configs.length, 1);
+            test.equal(configs[0], moonboots_hapi_options);
+            test.done();
+        });
+    },
+    getMoonbootsConfig: function (test) {
+        test.expect(1);
+        server.plugins.moonboots_hapi.getMoonbootsConfig(0, function (config) {
+            test.equal(config, moonboots_hapi_options);
+            test.done();
+        });
+
     }
 };

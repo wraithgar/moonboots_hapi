@@ -148,5 +148,19 @@ module.exports = {
             test.equal(res.payload, cssSource2);
             test.done();
         });
+    },
+    getMoonbootsConfig1: function (test) {
+        test.expect(1);
+        server.plugins.moonboots_hapi.getMoonbootsConfig(0, function (config) {
+            test.equal(config, moonboots_options1);
+            test.done();
+        });
+    },
+    getMoonbootsConfig2: function (test) {
+        test.expect(1);
+        server.plugins.moonboots_hapi.getMoonbootsConfig(1, function (config) {
+            test.equal(config, moonboots_options2);
+            test.done();
+        });
     }
 };
