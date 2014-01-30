@@ -4,7 +4,7 @@ var async = require('async');
 var Hapi = require('hapi');
 var Moonboots = require('moonboots');
 var moonboots_hapi_options = {
-    appPath: '/app',
+    appPath: '/myapp/{clientPath*}',
     main: __dirname + '/../sample/app/app.js',
     developmentMode: true,
     stylesheets: [
@@ -12,9 +12,9 @@ var moonboots_hapi_options = {
     ]
 };
 var moonboots_options = {
-    appPath: '/app',
-    jsFileName: 'app',
-    cssFileName: 'app',
+    appPath: '/myapp',
+    jsFileName: 'myapp',
+    cssFileName: 'myapp',
     main: __dirname + '/../sample/app/app.js',
     developmentMode: true,
     stylesheets: [
@@ -64,7 +64,7 @@ module.exports = {
         test.expect(2);
         server.inject({
             method: 'GET',
-            url: '/app'
+            url: '/myapp'
         }, function _getApp(res) {
             test.equal(res.statusCode, 200);
             test.equal(res.payload, appSource);
@@ -75,7 +75,7 @@ module.exports = {
         test.expect(2);
         server.inject({
             method: 'GET',
-            url: '/app.js'
+            url: '/myapp.js'
         }, function _getJs(res) {
             test.equal(res.statusCode, 200);
             test.equal(res.payload, jsSource);
@@ -86,7 +86,7 @@ module.exports = {
         test.expect(2);
         server.inject({
             method: 'GET',
-            url: '/app.css'
+            url: '/myapp.css'
         }, function _getJs(res) {
             test.equal(res.statusCode, 200);
             test.equal(res.payload, cssSource);

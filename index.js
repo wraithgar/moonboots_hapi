@@ -2,20 +2,20 @@ var Moonboots = require('moonboots');
 var async = require('async');
 
 function setDefaults(options, next) {
+    var baseAppPath;
     if (!options.appPath) {
         options.appPath = '/{client*}';
-        if (!options.jsFileName) {
-            options.jsFileName = 'app';
-        }
-        if (!options.cssFileName) {
-            options.cssFileName = 'app';
-        }
     }
+    baseAppPath = options.appPath.replace(/\/{.*}$/, '').slice(1);
+    if (!baseAppPath) {
+        baseAppPath = 'app';
+    }
+
     if (!options.jsFileName) {
-        options.jsFileName = options.appPath.slice(1);
+        options.jsFileName = baseAppPath;
     }
     if (!options.cssFileName) {
-        options.cssFileName = options.appPath.slice(1);
+        options.cssFileName = baseAppPath;
     }
     return options;
 }
