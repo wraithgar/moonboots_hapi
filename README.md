@@ -98,10 +98,10 @@ server.pack.require({moonboots_hapi: [moonboots_config1, moonboots_config2]}, fu
 There are currently two methods exposed from the plugin
 
 ```js
-server.plugins['moonboots_hapi].getMoonbootsConfigs(function (configs) {
+server.plugins['moonboots_hapi'].getMoonbootsConfigs(function (configs) {
     console.log(configs); //Will be all moonboots configs
 });
-server.plugins['moonboots_hapi].getMoonbootsApp(0, function (config) {
+server.plugins['moonboots_hapi'].getMoonbootsApp(0, function (config) {
     console.log(config); //Will be the first moonboots config
 });
 ```
