@@ -25,6 +25,7 @@ exports.register = function (plugin, options, next) {
     var clientConfigs = (options instanceof Array) ? options : [options];
 
     async.forEach(clientConfigs, function _eachApp(options, cb) {
+        var servers = (options.labels) ? plugin.select(options.labels) : plugin;
         var clientApp = new Moonboots(setDefaults(options));
         var appRouteConfig = clientApp.getConfig('hapi') || {};
         appRouteConfig.description = appRouteConfig.description || 'Main Moonboots app';
@@ -75,17 +76,17 @@ exports.register = function (plugin, options, next) {
             });
         },
         clientApp.on('ready', function _clientAppReady() {
-            plugin.route({
+            servers.route({
                 method: 'get',
                 path: '/' + encodeURIComponent(clientApp.jsFileName()),
                 config: jsRouteConfig
             });
-            plugin.route({
+            servers.route({
                 method: 'get',
                 path: '/' + encodeURIComponent(clientApp.cssFileName()),
                 config: cssRouteConfig
             });
-            plugin.route({
+            servers.route({
                 method: 'get',
                 path: clientApp.getConfig('appPath'),
                 config: appRouteConfig

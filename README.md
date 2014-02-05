@@ -78,6 +78,10 @@ server.pack.require({moonboots_hapi: moonboots_config}, function (err) {
 });
 ```
 
+You can also pass in a 'labels' option that will be used to select from
+hapi which servers will have the moonboots routes added to them (see
+plugin.select in the hapi docs)
+
 ## Multiple mooonboots on one server
 
 You can register multiple moonboots apps for a single hapi server like so:
