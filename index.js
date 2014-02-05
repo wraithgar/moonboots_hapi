@@ -25,6 +25,7 @@ exports.register = function (plugin, options, next) {
     var clientApps = (options instanceof Array) ? options : [options];
 
     async.forEach(clientApps, function _eachApp(options, cb) {
+        var servers = (options.labels) ? plugin.select(options.labels) : plugin;
         var clientApp = new Moonboots(setDefaults(options));
         var extendedConfig = clientApp.getConfig('hapi') || {};
         var config = {};
@@ -36,7 +37,7 @@ exports.register = function (plugin, options, next) {
             extendedConfig.cache.expiresIn = clientApp.getConfig('cachePeriod');
         }
         clientApp.on('ready', function () {
-            plugin.route({
+            servers.route({
                 method: 'get',
                 path: '/' + encodeURIComponent(clientApp.jsFileName()),
                 handler: function _jsFileHandler(request, reply) {
@@ -49,7 +50,7 @@ exports.register = function (plugin, options, next) {
                 },
                 config: config
             });
-            plugin.route({
+            servers.route({
                 method: 'get',
                 path: '/' + encodeURIComponent(clientApp.cssFileName()),
                 handler: function _cssFileHandler(request, reply) {
@@ -62,7 +63,7 @@ exports.register = function (plugin, options, next) {
                 },
                 config: config
             });
-            plugin.route({
+            servers.route({
                 method: 'get',
                 path: clientApp.getConfig('appPath'),
                 handler: function _appHandler(request, reply) {
