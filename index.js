@@ -48,8 +48,6 @@ exports.register = function (plugin, options, next) {
             cssRouteConfig.cache = {
                 expiresIn: clientApp.getConfig('cachePeriod')
             };
-            appRouteConfig.cache = appRouteConfig.cache || {};
-            appRouteConfig.cache.expiresIn = clientApp.getConfig('cachePeriod');
         }
         jsRouteConfig.handler = function jsRouteHandler(request, reply) {
             clientApp.jsSource(function _getJsSource(err, css) {
