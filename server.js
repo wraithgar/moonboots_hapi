@@ -1,7 +1,6 @@
 var Hapi = require('hapi');
 var moonboots_options = {
     main: __dirname + '/sample/app/app.js',
-    developmentMode: true,
     stylesheets: [
         __dirname + '/sample/stylesheets/style.css'
     ]
