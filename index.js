@@ -28,9 +28,15 @@ exports.register = function (plugin, options, next) {
         var servers = (options.labels) ? plugin.select(options.labels) : plugin;
         var clientApp = new Moonboots(setDefaults(options));
         var appRouteConfig = clientApp.getConfig('hapi') || {};
-        appRouteConfig.description = appRouteConfig.description || 'Main Moonboots app';
-        appRouteConfig.notes = appRouteConfig.notes || 'Returns the compiled Moonboots app';
-        appRouteConfig.tags = appRouteConfig.tags || ['moonboots', 'app'];
+        if (!appRouteConfig.description) {
+            appRouteConfig.description = appRouteConfig.description || 'Main Moonboots app';
+        }
+        if (!appRouteConfig.notes) {
+            appRouteConfig.notes = appRouteConfig.notes || 'Returns the compiled Moonboots app';
+        }
+        if (!appRouteConfig.tags) {
+            appRouteConfig.tags = appRouteConfig.tags || ['moonboots', 'app'];
+        }
         var jsRouteConfig = {
             description: 'Moonboots JS source',
             notes: 'Returns the compiled JS from moonboots',
@@ -49,14 +55,16 @@ exports.register = function (plugin, options, next) {
                 expiresIn: clientApp.getConfig('cachePeriod')
             };
         }
-        jsRouteConfig.handler = function jsRouteHandler(request, reply) {
-            clientApp.jsSource(function _getJsSource(err, css) {
-                if (err) {
-                    return reply(new HapiError.internal('No js source'));
-                }
-                reply(css).header('content-type', 'text/javascript; charset=utf-8');
-            });
-        };
+        if (!jsRouteConfig.handler) {
+            jsRouteConfig.handler = function jsRouteHandler(request, reply) {
+                clientApp.jsSource(function _getJsSource(err, css) {
+                    if (err) {
+                        return reply(new HapiError.internal('No js source'));
+                    }
+                    reply(css).header('content-type', 'text/javascript; charset=utf-8');
+                });
+            };
+        }
         cssRouteConfig.handler = function cssRouteHandler(request, reply) {
             clientApp.cssSource(function _getCssSource(err, css) {
                 if (err) {
