@@ -37,6 +37,9 @@ exports.register = function (plugin, options, next) {
         if (!appRouteConfig.tags) {
             appRouteConfig.tags = appRouteConfig.tags || ['moonboots', 'app'];
         }
+        if (!appRouteConfig.bind) {
+            appRouteConfig.bind = clientApp;
+        }
         var jsRouteConfig = {
             description: 'Moonboots JS source',
             notes: 'Returns the compiled JS from moonboots',
