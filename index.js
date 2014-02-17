@@ -58,16 +58,14 @@ exports.register = function (plugin, options, next) {
                 expiresIn: clientApp.getConfig('cachePeriod')
             };
         }
-        if (!jsRouteConfig.handler) {
-            jsRouteConfig.handler = function jsRouteHandler(request, reply) {
-                clientApp.jsSource(function _getJsSource(err, css) {
-                    if (err) {
-                        return reply(new HapiError.internal('No js source'));
-                    }
-                    reply(css).header('content-type', 'text/javascript; charset=utf-8');
-                });
-            };
-        }
+        jsRouteConfig.handler = function jsRouteHandler(request, reply) {
+            clientApp.jsSource(function _getJsSource(err, css) {
+                if (err) {
+                    return reply(new HapiError.internal('No js source'));
+                }
+                reply(css).header('content-type', 'text/javascript; charset=utf-8');
+            });
+        };
         cssRouteConfig.handler = function cssRouteHandler(request, reply) {
             clientApp.cssSource(function _getCssSource(err, css) {
                 if (err) {
@@ -76,14 +74,16 @@ exports.register = function (plugin, options, next) {
                 reply(css).header('content-type', 'text/css; charset=utf-8');
             });
         };
-        appRouteConfig.handler = function appRouteHandler(request, reply) {
-            clientApp.getResult('html', function _getHtmlResult(err, html) {
-                if (err) {
-                    return reply(new HapiError.internal('No html result'));
-                }
-                reply(html);
-            });
-        },
+        if (!appRouteConfig.handler) {
+            appRouteConfig.handler = function appRouteHandler(request, reply) {
+                clientApp.getResult('html', function _getHtmlResult(err, html) {
+                    if (err) {
+                        return reply(new HapiError.internal('No html result'));
+                    }
+                    reply(html);
+                });
+            };
+        }
         clientApp.on('ready', function _clientAppReady() {
             servers.route({
                 method: 'get',
