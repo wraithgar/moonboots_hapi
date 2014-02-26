@@ -80,7 +80,10 @@ exports.register = function (plugin, options, next) {
                     if (err) {
                         return reply(new HapiError.internal('No html result'));
                     }
-                    reply(html);
+                    // Set cache-control explicitly to no-store
+                    // this is so chrome doesn't trust it's cache
+                    // even on back button presses.
+                    reply(html).header('cache-control', 'no-store');
                 });
             };
         }
