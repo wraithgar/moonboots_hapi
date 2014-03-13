@@ -1,18 +1,20 @@
 /* Test that the routes return expected data */
+var Lab = require('lab');
 var server, appSource, jsSource, cssSource;
 var async = require('async');
 var Hapi = require('hapi');
 var Moonboots = require('moonboots');
 var moonboots_hapi_options = {
     appPath: '/myapp/{clientPath*}',
-    main: __dirname + '/../sample/app/app.js',
-    developmentMode: true,
-    stylesheets: [
-        __dirname + '/../sample/stylesheets/style.css'
-    ]
+    moonboots: {
+        main: __dirname + '/../sample/app/app.js',
+        developmentMode: true,
+        stylesheets: [
+            __dirname + '/../sample/stylesheets/style.css'
+        ]
+    }
 };
 var moonboots_options = {
-    appPath: '/myapp',
     jsFileName: 'myapp',
     cssFileName: 'myapp',
     main: __dirname + '/../sample/app/app.js',
@@ -24,8 +26,8 @@ var moonboots_options = {
 
 var moonboots = new Moonboots(moonboots_options);
 
-module.exports = {
-    setUp: function (next) {
+Lab.experiment('defaults', function () {
+    Lab.before(function (done) {
         server = new Hapi.Server('localhost', 3001);
         async.parallel({
             plugin: function (next) {
@@ -54,59 +56,49 @@ module.exports = {
                 process.stderr.write('Unable to setUp tests', err, '\n');
                 process.exit(1);
             }
-            next();
+            done();
         });
-    },
-    tearDown: function (next) {
-        next();
-    },
-    app: function (test) {
-        test.expect(2);
+    });
+    Lab.test('app', function (done) {
         server.inject({
             method: 'GET',
             url: '/myapp'
         }, function _getApp(res) {
-            test.equal(res.statusCode, 200);
-            test.equal(res.payload, appSource);
-            test.done();
+            Lab.expect(res.statusCode).to.equal(200);
+            Lab.expect(res.payload).to.equal(appSource);
+            done();
         });
-    },
-    js: function (test) {
-        test.expect(2);
+    });
+    Lab.test('js', function (done) {
         server.inject({
             method: 'GET',
             url: '/myapp.js'
         }, function _getJs(res) {
-            test.equal(res.statusCode, 200);
-            test.equal(res.payload, jsSource);
-            test.done();
+            Lab.expect(res.statusCode).to.equal(200);
+            Lab.expect(res.payload).to.equal(jsSource);
+            done();
         });
-    },
-    css: function (test) {
-        test.expect(2);
+    });
+    Lab.test('css',  function (done) {
         server.inject({
             method: 'GET',
             url: '/myapp.css'
         }, function _getJs(res) {
-            test.equal(res.statusCode, 200);
-            test.equal(res.payload, cssSource);
-            test.done();
+            Lab.expect(res.statusCode).to.equal(200);
+            Lab.expect(res.payload).to.equal(cssSource);
+            done();
         });
-    },
-    getMoonbootsConfigs: function (test) {
-        test.expect(2);
-        server.plugins.moonboots_hapi.getMoonbootsConfigs(function (configs) {
-            test.equal(configs.length, 1);
-            test.equal(configs[0], moonboots_hapi_options);
-            test.done();
+    });
+    Lab.test('clientConfig', function (done) {
+        server.plugins.moonboots_hapi.clientConfig(0, function (config) {
+            Lab.expect(config).to.equal(moonboots_hapi_options);
+            done();
         });
-    },
-    getMoonbootsConfig: function (test) {
-        test.expect(1);
-        server.plugins.moonboots_hapi.getMoonbootsConfig(0, function (config) {
-            test.equal(config, moonboots_hapi_options);
-            test.done();
+    });
+    Lab.test('clientApp', function (done) {
+        server.plugins.moonboots_hapi.clientApp(0, function (clientApp) {
+            Lab.expect(clientApp).to.be.instanceOf(Moonboots);
+            done();
         });
-
-    }
-};
+    });
+});

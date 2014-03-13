@@ -7,10 +7,8 @@ var moonboots_options = {
 };
 
 var config = {
-    app: {
-        moonboots: moonboots_options,
-        appPath: '/app/{appPath*}'
-    }
+    moonboots: moonboots_options,
+    appPath: '/app/{appPath*}'
 };
 
 var server = new Hapi.Server('localhost', 3000);

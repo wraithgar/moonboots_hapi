@@ -20,13 +20,13 @@
     "moonboots": "~1.2.x"
   },
   "devDependencies": {
-    "glob": "3.2.x",
+    "complexity-report": "1.0.x",
     "hapi": "2.x.x",
-    "nodeunit": "0.8.x",
+    "lab": "1.x.x",
     "precommit-hook": "0.3.x"
   },
   "scripts": {
-    "test": "NODE_ENV=test ./test.js"
+    "test": "make test"
   },
   "license": "MIT"
 }

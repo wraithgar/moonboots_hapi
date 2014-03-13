@@ -21,15 +21,16 @@ function setDefaults(options, next) {
     return options;
 }
 
-exports.register = function (plugin, clientConfigs, next) {
+exports.register = function (plugin, options, next) {
     var HapiError = plugin.hapi.Error;
-    var clientApps = {};
+    var clientApps = [];
+    var clientConfigs = (options instanceof Array) ? options : [options];
 
-    async.each(Object.keys(clientConfigs), function _eachConfig(appName, cb) {
-        var appOptions = setDefaults(clientConfigs[appName]);
+    async.each(clientConfigs, function _eachApp(clientConfig, cb) {
+        var appOptions = setDefaults(clientConfig);
         var servers = (appOptions.labels) ? plugin.select(appOptions.labels) : plugin;
         var clientApp = new Moonboots(appOptions.moonboots);
-        clientApps[appName] = clientApp;
+        clientApps.push(clientApp);
         /* App config */
         appOptions.appConfig = appOptions.appConfig || {};
         if (appOptions.appConfig) {
