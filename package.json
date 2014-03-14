@@ -5,7 +5,7 @@
   ],
   "name": "moonboots_hapi",
   "description": "Moonboots plugin that allows it to serve files using a hapi server",
-  "version": "1.5.2",
+  "version": "2.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/wraithgar/moonboots-hapi"
@@ -20,13 +20,13 @@
     "moonboots": "~1.2.x"
   },
   "devDependencies": {
-    "glob": "3.2.x",
-    "hapi": "2.x.x",
-    "nodeunit": "0.8.x",
+    "complexity-report": "1.0.x",
+    "hapi": "^2.4.0",
+    "lab": "1.x.x",
     "precommit-hook": "0.3.x"
   },
   "scripts": {
-    "test": "NODE_ENV=test ./test.js"
+    "test": "make test"
   },
   "license": "MIT"
 }
