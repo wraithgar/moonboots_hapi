@@ -41,12 +41,6 @@ exports.register = function (plugin, options, next) {
             appOptions.appConfig.handler = appOptions.appConfig.handler ||
                 function appRouteHandler(request, reply) {
                     clientApp.getResult('html', function _getHtmlResult(err, html) {
-                        if (err) {
-                            return reply(new HapiError.internal('No html result'));
-                        }
-                        // Set cache-control explicitly to no-store
-                        // this is so chrome doesn't trust it's cache
-                        // even on back button presses.
                         reply(html).header('cache-control', 'no-store');
                     });
                 };
@@ -60,9 +54,6 @@ exports.register = function (plugin, options, next) {
         appOptions.jsConfig.handler = appOptions.jsConfig.handler ||
             function jsRouteHandler(request, reply) {
                 clientApp.jsSource(function _getJsSource(err, css) {
-                    if (err) {
-                        return reply(new HapiError.internal('No js source'));
-                    }
                     reply(css).header('content-type', 'text/javascript; charset=utf-8');
                 });
             };
@@ -75,9 +66,6 @@ exports.register = function (plugin, options, next) {
         appOptions.cssConfig.handler = appOptions.cssConfig.handler ||
             function cssRouteHandler(request, reply) {
                 clientApp.cssSource(function _getCssSource(err, css) {
-                    if (err) {
-                        return reply(new HapiError.internal('No css source'));
-                    }
                     reply(css).header('content-type', 'text/css; charset=utf-8');
                 });
             };
@@ -107,11 +95,11 @@ exports.register = function (plugin, options, next) {
             });
             cb();
         });
-    }, function () {
-        plugin.expose('clientConfig', function (key, cb) {
+    }, function _clientsConfigured() {
+        plugin.expose('clientConfig', function _getClientConfig(key, cb) {
             return cb(clientConfigs[key]);
         });
-        plugin.expose('clientApp', function (key, cb) {
+        plugin.expose('clientApp', function _getClientApp(key, cb) {
             return cb(clientApps[key]);
         });
         next();
