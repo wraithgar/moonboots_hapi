@@ -5,7 +5,6 @@ var async = require('async');
 var Hapi = require('hapi');
 var Moonboots = require('moonboots');
 var moonboots_hapi_options = {
-    appPath: '/myapp/{clientPath*}',
     moonboots: {
         main: __dirname + '/../sample/app/app.js',
         developmentMode: true,
@@ -15,9 +14,8 @@ var moonboots_hapi_options = {
     }
 };
 var moonboots_options = {
-    jsFileName: 'myapp',
-    cssFileName: 'myapp',
     main: __dirname + '/../sample/app/app.js',
+    cssFileName: 'app',
     developmentMode: true,
     stylesheets: [
         __dirname + '/../sample/stylesheets/style.css'
@@ -62,7 +60,7 @@ Lab.experiment('default happy path tests', function () {
     Lab.test('serves app where expected', function (done) {
         server.inject({
             method: 'GET',
-            url: '/myapp'
+            url: '/app'
         }, function _getApp(res) {
             Lab.expect(res.statusCode, 'response code').to.equal(200);
             Lab.expect(res.payload, 'response body').to.equal(appSource, 'application source');
@@ -72,7 +70,7 @@ Lab.experiment('default happy path tests', function () {
     Lab.test('serves js where expected', function (done) {
         server.inject({
             method: 'GET',
-            url: '/myapp.js'
+            url: '/app.js'
         }, function _getJs(res) {
             Lab.expect(res.statusCode, 'response code').to.equal(200);
             Lab.expect(res.payload, 'response body').to.equal(jsSource, 'js source');
@@ -82,7 +80,7 @@ Lab.experiment('default happy path tests', function () {
     Lab.test('serves css where expected',  function (done) {
         server.inject({
             method: 'GET',
-            url: '/myapp.css'
+            url: '/app.css'
         }, function _getJs(res) {
             Lab.expect(res.statusCode, 'response code').to.equal(200);
             Lab.expect(res.payload, 'response body').to.equal(cssSource, 'css source');
