@@ -26,7 +26,7 @@ var moonboots_options = {
 
 var moonboots = new Moonboots(moonboots_options);
 
-Lab.experiment('defaults', function () {
+Lab.experiment('default happy path tests', function () {
     Lab.before(function (done) {
         server = new Hapi.Server('localhost', 3001);
         async.parallel({
@@ -59,45 +59,45 @@ Lab.experiment('defaults', function () {
             done();
         });
     });
-    Lab.test('app', function (done) {
+    Lab.test('serves app where expected', function (done) {
         server.inject({
             method: 'GET',
             url: '/myapp'
         }, function _getApp(res) {
-            Lab.expect(res.statusCode).to.equal(200);
-            Lab.expect(res.payload).to.equal(appSource);
+            Lab.expect(res.statusCode, 'response code').to.equal(200);
+            Lab.expect(res.payload, 'response body').to.equal(appSource, 'application source');
             done();
         });
     });
-    Lab.test('js', function (done) {
+    Lab.test('serves js where expected', function (done) {
         server.inject({
             method: 'GET',
             url: '/myapp.js'
         }, function _getJs(res) {
-            Lab.expect(res.statusCode).to.equal(200);
-            Lab.expect(res.payload).to.equal(jsSource);
+            Lab.expect(res.statusCode, 'response code').to.equal(200);
+            Lab.expect(res.payload, 'response body').to.equal(jsSource, 'js source');
             done();
         });
     });
-    Lab.test('css',  function (done) {
+    Lab.test('serves css where expected',  function (done) {
         server.inject({
             method: 'GET',
             url: '/myapp.css'
         }, function _getJs(res) {
-            Lab.expect(res.statusCode).to.equal(200);
-            Lab.expect(res.payload).to.equal(cssSource);
+            Lab.expect(res.statusCode, 'response code').to.equal(200);
+            Lab.expect(res.payload, 'response body').to.equal(cssSource, 'css source');
             done();
         });
     });
-    Lab.test('clientConfig', function (done) {
+    Lab.test('clientConfig is exposed', function (done) {
         server.plugins.moonboots_hapi.clientConfig(0, function (config) {
-            Lab.expect(config).to.equal(moonboots_hapi_options);
+            Lab.expect(config, 'client config').to.equal(moonboots_hapi_options, 'moonboots-hapi config');
             done();
         });
     });
-    Lab.test('clientApp', function (done) {
+    Lab.test('clientApp is exposed', function (done) {
         server.plugins.moonboots_hapi.clientApp(0, function (clientApp) {
-            Lab.expect(clientApp).to.be.instanceOf(Moonboots);
+            Lab.expect(clientApp, 'client app').to.be.instanceOf(Moonboots);
             done();
         });
     });
