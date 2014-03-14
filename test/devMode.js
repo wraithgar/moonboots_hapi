@@ -55,7 +55,7 @@ Lab.experiment('developmentMode flag properly affects caching', function () {
             method: 'GET',
             url: '/app',
         }, function _devApp(res) {
-            Lab.expect(res.headers['cache-control'], 'cache-control header').to.equal('no-cache');
+            Lab.expect(res.headers['cache-control'], 'cache-control header').to.equal('no-store');
             done();
         });
     });

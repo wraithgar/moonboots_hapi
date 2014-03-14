@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "complexity-report": "1.0.x",
-    "hapi": "2.x.x",
+    "hapi": "^2.4.0",
     "lab": "1.x.x",
     "precommit-hook": "0.3.x"
   },
