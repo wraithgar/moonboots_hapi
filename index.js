@@ -18,6 +18,9 @@ function setDefaults(options, next) {
     if (!options.moonboots.cssFileName) {
         options.moonboots.cssFileName = baseAppPath;
     }
+    if (!options.logLevel) {
+        options.logLevel = 'debug';
+    }
     return options;
 }
 
@@ -27,9 +30,14 @@ exports.register = function (plugin, options, next) {
     var clientConfigs = (options instanceof Array) ? options : [options];
 
     async.each(clientConfigs, function _eachApp(clientConfig, cb) {
+        var clientApp;
         var appOptions = setDefaults(clientConfig);
         var servers = (appOptions.labels) ? plugin.select(appOptions.labels) : plugin;
-        var clientApp = new Moonboots(appOptions.moonboots);
+        if (appOptions.logLevel !== 'none') {
+            console.log('plugin.log', appOptions.logLevel, appOptions.appPath);
+            plugin.log(['plugin', 'moonboots-hapi', appOptions.logLevel], {message: 'creating moonboots app', appPath: appOptions.appPath});
+        }
+        clientApp = new Moonboots(appOptions.moonboots);
         clientApps.push(clientApp);
         /* App config */
         appOptions.appConfig = appOptions.appConfig || {};
@@ -93,6 +101,10 @@ exports.register = function (plugin, options, next) {
                 path: appOptions.appPath,
                 config: appOptions.appConfig
             });
+            if (appOptions.logLevel !== 'none') {
+                console.log('plugin.log', appOptions.logLevel, appOptions.appPath);
+                plugin.log(['moonboots-hapi', appOptions.logLevel], {message: 'moonboots app ready', appPath: appOptions.appPath});
+            }
             cb();
         });
     }, function _clientsConfigured() {

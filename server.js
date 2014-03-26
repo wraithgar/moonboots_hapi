@@ -14,6 +14,10 @@ var config = {
 
 var server = new Hapi.Server('localhost', 3000);
 
+//server.pack.events.on('log', function (event, tags) {
+    //console.log(event);
+//});
+
 server.route({
     method: 'get',
     path: '/',
