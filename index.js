@@ -34,7 +34,6 @@ exports.register = function (plugin, options, next) {
         var appOptions = setDefaults(clientConfig);
         var servers = (appOptions.labels) ? plugin.select(appOptions.labels) : plugin;
         if (appOptions.logLevel !== 'none') {
-            console.log('plugin.log', appOptions.logLevel, appOptions.appPath);
             plugin.log(['plugin', 'moonboots-hapi', appOptions.logLevel], {message: 'creating moonboots app', appPath: appOptions.appPath});
         }
         clientApp = new Moonboots(appOptions.moonboots);
@@ -102,7 +101,6 @@ exports.register = function (plugin, options, next) {
                 config: appOptions.appConfig
             });
             if (appOptions.logLevel !== 'none') {
-                console.log('plugin.log', appOptions.logLevel, appOptions.appPath);
                 plugin.log(['moonboots-hapi', appOptions.logLevel], {message: 'moonboots app ready', appPath: appOptions.appPath});
             }
             cb();
