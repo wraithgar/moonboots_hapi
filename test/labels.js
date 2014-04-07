@@ -35,10 +35,8 @@ Lab.experiment('labels parameter', function () {
                 pack.require({'..': options }, next);
             },
             getSource: function (next) {
-                moonboots.getResult('html', function _getSource(err, html) {
-                    appSource = html;
-                    next(err);
-                });
+                appSource = moonboots.htmlSource();
+                next();
             }
         }, function (err) {
             if (err) {

@@ -42,16 +42,9 @@ Lab.experiment('multiple apps happy path', function () {
                 server.pack.require({ '..': [options1, options2] }, next);
             },
             getSource: function (next) {
-                moonboots1.getResult('html', function _getSource(err, html) {
-                    appSource1 = html;
-                    next(err);
-                });
-            },
-            getSource2: function (next) {
-                moonboots2.getResult('html', function _getSource(err, html) {
-                    appSource2 = html;
-                    next(err);
-                });
+                appSource1 = moonboots1.htmlSource();
+                appSource2 = moonboots2.htmlSource();
+                next();
             },
             getJs: function (next) {
                 moonboots1.jsSource(function _getJsSource(err, js) {

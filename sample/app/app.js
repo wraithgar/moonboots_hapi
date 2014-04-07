@@ -1,3 +1,4 @@
+/*global window*/
 var code = require('./code');
 
 module.exports = {

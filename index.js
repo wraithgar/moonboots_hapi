@@ -21,6 +21,12 @@ function setDefaults(options, next) {
     if (!options.logLevel) {
         options.logLevel = 'debug';
     }
+    if (options.developmentMode) {
+        options.moonboots.developmentMode = true;
+    }
+    if (!options.cachePeriod) {
+        options.cachePeriod = 86400000 * 360; //one year
+    }
     return options;
 }
 
@@ -47,9 +53,8 @@ exports.register = function (plugin, options, next) {
             appOptions.appConfig.bind = appOptions.appConfig.bind || clientApp;
             appOptions.appConfig.handler = appOptions.appConfig.handler ||
                 function appRouteHandler(request, reply) {
-                    clientApp.getResult('html', function _getHtmlResult(err, html) {
-                        reply(html).header('cache-control', 'no-store');
-                    });
+                    var htmlSource = clientApp.htmlSource();
+                    reply(htmlSource).header('cache-control', 'no-store');
                 };
         }
 
@@ -76,14 +81,15 @@ exports.register = function (plugin, options, next) {
                     reply(css).header('content-type', 'text/css; charset=utf-8');
                 });
             };
-        if (!clientApp.getConfig('developmentMode')) {
+        if (!appOptions.developmentMode) {
             appOptions.jsConfig.cache = {
-                expiresIn: clientApp.getConfig('cachePeriod')
+                expiresIn: appOptions.cachePeriod
             };
             appOptions.cssConfig.cache = {
-                expiresIn: clientApp.getConfig('cachePeriod')
+                expiresIn: appOptions.cachePeriod
             };
         }
+        clientApp.on('log', plugin.log);
         clientApp.on('ready', function _clientAppReady() {
             servers.route({
                 method: 'get',

@@ -26,10 +26,8 @@ Lab.experiment('routes', function () {
                 server.pack.require({ '..': options }, next);
             },
             getSource: function (next) {
-                moonboots.getResult('html', function _getSource(err, html) {
-                    appSource = html;
-                    next(err);
-                });
+                appSource = moonboots.htmlSource();
+                next();
             },
             getJs: function (next) {
                 moonboots.jsSource(function _getJsSource(err, js) {

@@ -1,6 +1,8 @@
 var Hapi = require('hapi');
 var moonboots_options = {
-    developmentMode: true,
+    beforeBuildCSS: function (done) {
+        done('AAGH');
+    },
     main: __dirname + '/sample/app/app.js',
     stylesheets: [
         __dirname + '/sample/stylesheets/style.css'
@@ -8,15 +10,16 @@ var moonboots_options = {
 };
 
 var config = {
+    developmentMode: true,
     moonboots: moonboots_options,
     appPath: '/app/{appPath*}'
 };
 
 var server = new Hapi.Server('localhost', 3000);
 
-//server.pack.events.on('log', function (event, tags) {
-    //console.log(event);
-//});
+server.pack.events.on('log', function (event, tags) {
+    console.log(event);
+});
 
 server.route({
     method: 'get',

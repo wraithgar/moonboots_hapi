@@ -7,7 +7,6 @@ var Moonboots = require('moonboots');
 var moonboots_hapi_options = {
     moonboots: {
         main: __dirname + '/../sample/app/app.js',
-        developmentMode: true,
         stylesheets: [
             __dirname + '/../sample/stylesheets/style.css'
         ]
@@ -32,10 +31,8 @@ Lab.experiment('default happy path tests', function () {
                 server.pack.require({ '..': moonboots_hapi_options }, next);
             },
             getSource: function (next) {
-                moonboots.getResult('html', function _getSource(err, html) {
-                    appSource = html;
-                    next(err);
-                });
+                appSource = moonboots.htmlSource();
+                next();
             },
             getJs: function (next) {
                 moonboots.jsSource(function _getJsSource(err, js) {
