@@ -5,6 +5,7 @@ var async = require('async');
 var Hapi = require('hapi');
 var Moonboots = require('moonboots');
 var moonboots_hapi_options = {
+    developmentMode: true,
     moonboots: {
         main: __dirname + '/../sample/app/app.js',
         stylesheets: [
@@ -67,7 +68,7 @@ Lab.experiment('default happy path tests', function () {
     Lab.test('serves js where expected', function (done) {
         server.inject({
             method: 'GET',
-            url: '/app.js'
+            url: '/app.dev.js'
         }, function _getJs(res) {
             Lab.expect(res.statusCode, 'response code').to.equal(200);
             Lab.expect(res.payload, 'response body').to.equal(jsSource, 'js source');
@@ -77,7 +78,7 @@ Lab.experiment('default happy path tests', function () {
     Lab.test('serves css where expected',  function (done) {
         server.inject({
             method: 'GET',
-            url: '/app.css'
+            url: '/app.dev.css'
         }, function _getJs(res) {
             Lab.expect(res.statusCode, 'response code').to.equal(200);
             Lab.expect(res.payload, 'response body').to.equal(cssSource, 'css source');

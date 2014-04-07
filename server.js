@@ -1,8 +1,5 @@
 var Hapi = require('hapi');
 var moonboots_options = {
-    beforeBuildCSS: function (done) {
-        done('AAGH');
-    },
     main: __dirname + '/sample/app/app.js',
     stylesheets: [
         __dirname + '/sample/stylesheets/style.css'
@@ -10,7 +7,6 @@ var moonboots_options = {
 };
 
 var config = {
-    developmentMode: true,
     moonboots: moonboots_options,
     appPath: '/app/{appPath*}'
 };

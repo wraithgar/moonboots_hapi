@@ -18,8 +18,8 @@ var prod_options = {
 
 var dev_options = {
     appPath: '/app',
+    developmentMode: true,
     moonboots: {
-        developmentMode: true,
         jsFileName: 'moonboots-hapi-js',
         cssFileName: 'moonboots-hapi-css',
         main: __dirname + '/../sample/app/app.js',
@@ -80,9 +80,9 @@ Lab.experiment('developmentMode flag properly affects caching', function () {
     Lab.test('production app cache header', function (done) {
         prodServer.inject({
             method: 'GET',
-            url: '/' + prodMoonboots.getConfig('appPath')
+            url: '/app'
         }, function _prodApp(res) {
-            Lab.expect(res.headers['cache-control'], 'cache-control header').to.equal('no-cache');
+            Lab.expect(res.headers['cache-control'], 'cache-control header').to.equal('no-store');
             done();
         });
     });

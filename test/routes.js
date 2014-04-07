@@ -62,7 +62,7 @@ Lab.experiment('routes', function () {
     Lab.test('serves js where expected', function (done) {
         server.inject({
             method: 'GET',
-            url: '/moonboots-hapi-js.js'
+            url: '/moonboots-hapi-js.dev.js'
         }, function _getJs(res) {
             Lab.expect(res.statusCode, 'response code').to.equal(200);
             Lab.expect(res.payload, 'response body').to.equal(jsSource, 'js source');
@@ -72,7 +72,7 @@ Lab.experiment('routes', function () {
     Lab.test('serves css where expected',  function (done) {
         server.inject({
             method: 'GET',
-            url: '/moonboots-hapi-css.css'
+            url: '/moonboots-hapi-css.dev.css'
         }, function _getJs(res) {
             Lab.expect(res.statusCode, 'response code').to.equal(200);
             Lab.expect(res.payload, 'response body').to.equal(cssSource, 'css source');
