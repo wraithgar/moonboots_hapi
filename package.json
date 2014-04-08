@@ -16,12 +16,12 @@
   },
   "main": "index.js",
   "dependencies": {
-    "async": "~0.2.x",
-    "moonboots": "~1.2.x"
+    "async": "^0.7.0",
+    "moonboots": "^2.0.0"
   },
   "devDependencies": {
-    "complexity-report": "1.0.x",
-    "hapi": "^2.4.0",
+    "complexity-report": "^1.0.0",
+    "hapi": "^4.0.0",
     "lab": "1.x.x",
     "precommit-hook": "0.3.x"
   },
