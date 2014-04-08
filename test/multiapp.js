@@ -101,7 +101,7 @@ Lab.experiment('multiple apps happy path', function () {
     Lab.test('serves app1 js where expected', function (done) {
         server.inject({
             method: 'GET',
-            url: '/moonboots-hapi-js1.dev.js'
+            url: '/moonboots-hapi-js1.nonCached.js'
         }, function _getJs(res) {
             Lab.expect(res.statusCode, 'response code').to.equal(200);
             Lab.expect(res.payload, 'response body').to.equal(jsSource1, 'js source');
@@ -111,7 +111,7 @@ Lab.experiment('multiple apps happy path', function () {
     Lab.test('serves app2 js where expected', function (done) {
         server.inject({
             method: 'GET',
-            url: '/moonboots-hapi-js2.dev.js'
+            url: '/moonboots-hapi-js2.nonCached.js'
         }, function _getJs(res) {
             Lab.expect(res.statusCode, 'response code').to.equal(200);
             Lab.expect(res.payload, 'response body').to.equal(jsSource2, 'js source');
@@ -121,7 +121,7 @@ Lab.experiment('multiple apps happy path', function () {
     Lab.test('serves app1 css where expected', function (done) {
         server.inject({
             method: 'GET',
-            url: '/moonboots-hapi-css1.dev.css'
+            url: '/moonboots-hapi-css1.nonCached.css'
         }, function _getJs(res) {
             Lab.expect(res.statusCode, 'response code').to.equal(200);
             Lab.expect(res.payload, 'response body').to.equal(cssSource1, 'css source');
@@ -131,7 +131,7 @@ Lab.experiment('multiple apps happy path', function () {
     Lab.test('serves app1 css where expected', function (done) {
         server.inject({
             method: 'GET',
-            url: '/moonboots-hapi-css2.dev.css'
+            url: '/moonboots-hapi-css2.nonCached.css'
         }, function _getJs(res) {
             Lab.expect(res.statusCode, 'response code').to.equal(200);
             Lab.expect(res.payload, 'response body').to.equal(cssSource2, 'css source');
