@@ -1,7 +1,10 @@
 # moonboots-hapi
+====
+
+[![NPM](https://nodei.co/npm/moonboots_hapi.png)](https://nodei.co/npm/moonboots_hapi/)
 
 Moonboots plugin that allows it to serve files using a hapi server.
-Be sure to use hapi 2.x (won't work on 1.x, see legacy branch for 1.x)
+Be sure to use at least hapi 2.0 (won't work on 1.0, see legacy branch for 1.0)
 
 ## How to use:
 
