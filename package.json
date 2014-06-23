@@ -5,7 +5,7 @@
   ],
   "name": "moonboots_hapi",
   "description": "Moonboots plugin that allows it to serve files using a hapi server",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/wraithgar/moonboots_hapi"
