@@ -38,6 +38,19 @@ server.pack.require({moonboots_hapi: config}, function (er) {
 
 ## Additional options
 
+You can disable specific routes (all are enabled by default) using the
+`routes` config
+
+This example would tell moonboots-hapi not to add the route for the html
+app to hapi.  You can do the same with `js` for the js route and `css`
+for the css route.
+
+```js
+var options = {
+    routes: {html: false}
+};
+
+
 You can specify labels for your your routes, simply pass them in as a
 config item (see Hapi documentation for plugin.select for more
 information on labels)

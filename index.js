@@ -4,6 +4,7 @@ var async = require('async');
 function setDefaults(options, next) {
     var baseAppPath;
     options.moonboots = options.moonboots || {};
+    options.routes = options.routes || {};
     if (!options.appPath) {
         options.appPath = '/{client*}';
     }
@@ -12,6 +13,15 @@ function setDefaults(options, next) {
         baseAppPath = 'app';
     }
 
+    if (options.routes.js === undefined) {
+        options.routes.js = true;
+    }
+    if (options.routes.css === undefined) {
+        options.routes.css = true;
+    }
+    if (options.routes.html === undefined) {
+        options.routes.html = true;
+    }
     if (!options.moonboots.jsFileName) {
         options.moonboots.jsFileName = baseAppPath;
     }
@@ -91,21 +101,27 @@ exports.register = function (plugin, options, next) {
         }
         clientApp.on('log', plugin.log);
         clientApp.on('ready', function _clientAppReady() {
-            servers.route({
-                method: 'get',
-                path: '/' + encodeURIComponent(clientApp.jsFileName()),
-                config: appOptions.jsConfig
-            });
-            servers.route({
-                method: 'get',
-                path: '/' + encodeURIComponent(clientApp.cssFileName()),
-                config: appOptions.cssConfig
-            });
-            servers.route({
-                method: 'get',
-                path: appOptions.appPath,
-                config: appOptions.appConfig
-            });
+            if (appOptions.routes.js) {
+                servers.route({
+                    method: 'get',
+                    path: '/' + encodeURIComponent(clientApp.jsFileName()),
+                    config: appOptions.jsConfig
+                });
+            }
+            if (appOptions.routes.css) {
+                servers.route({
+                    method: 'get',
+                    path: '/' + encodeURIComponent(clientApp.cssFileName()),
+                    config: appOptions.cssConfig
+                });
+            }
+            if (appOptions.routes.html) {
+                servers.route({
+                    method: 'get',
+                    path: appOptions.appPath,
+                    config: appOptions.appConfig
+                });
+            }
             if (appOptions.logLevel !== 'none') {
                 plugin.log(['moonboots-hapi', appOptions.logLevel], {message: 'moonboots app ready', appPath: appOptions.appPath});
             }
