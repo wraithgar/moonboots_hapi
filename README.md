@@ -127,6 +127,21 @@ server.pack.require({moonboots_hapi: config}, function (err) {
 });
 ```
 
+
+## Templated app
+
+By default moonboots serves up an app html of just a script and css tag
+linking to the js and css source. You can override this by passing an
+``appTemplate`` option.  This string will be passed to the view handler
+in hapi, and given the following context:
+
+```
+{
+    jsFileName: '/link/to/app.js',
+    cssFileName: '/link/to/app.css'
+}
+```
+
 ## Multiple mooonboots on one server
 
 You can register multiple moonboots apps for a single hapi server like

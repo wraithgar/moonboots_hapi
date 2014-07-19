@@ -61,10 +61,10 @@ exports.register = function (plugin, options, next) {
         appOptions.appConfig.tags = appOptions.appConfig.tags || ['moonboots', 'app'];
         appOptions.appConfig.bind = appOptions.appConfig.bind || clientApp;
         if (!appOptions.appConfig.handler) {
-            if (appOptions.appConfig.template) {
+            if (appOptions.appTemplate) {
                 appOptions.appConfig.handler = function appRouteTemplateHandler(request, reply) {
                     var htmlContext = clientApp.htmlContext();
-                    return reply.view(appOptions.appConfig.template, htmlContext);
+                    return reply.view(appOptions.appTemplate, htmlContext);
                 };
             } else {
                 appOptions.appConfig.handler =  function appRouteDefaultHandler(request, reply) {
