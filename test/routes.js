@@ -4,6 +4,7 @@ var server, appSource, jsSource, cssSource;
 var async = require('async');
 var Hapi = require('hapi');
 var Moonboots = require('moonboots');
+var MoonbootsHapi = require('..');
 var options = {
     appPath: '/app',
     moonboots: {
@@ -38,7 +39,10 @@ Lab.experiment('routes', function () {
         server = new Hapi.Server('localhost', 3001);
         async.parallel({
             plugin: function (next) {
-                server.pack.require({ '..': options }, next);
+                server.pack.register([{
+                    plugin: MoonbootsHapi,
+                    options: options
+                }], next);
             },
             getSource: function (next) {
                 appSource = moonboots.htmlSource();
@@ -101,7 +105,10 @@ Lab.experiment('disabling routes', function () {
         server = new Hapi.Server('localhost', 3001);
         async.parallel({
             plugin: function (next) {
-                server.pack.require({ '..': no_html }, next);
+                server.pack.register([{
+                    plugin: MoonbootsHapi,
+                    options: no_html
+                }], next);
             },
             getJs: function (next) {
                 moonboots.jsSource(function _getJsSource(err, js) {

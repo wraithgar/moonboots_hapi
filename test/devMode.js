@@ -4,6 +4,7 @@ var prodServer, devServer, jsPath, cssPath;
 var async = require('async');
 var Hapi = require('hapi');
 var Moonboots = require('moonboots');
+var MoonbootsHapi = require('..');
 var prod_options = {
     appPath: '/app',
     moonboots: {
@@ -37,10 +38,16 @@ Lab.experiment('developmentMode flag properly affects caching', function () {
         devServer = new Hapi.Server('localhost', 3002);
         async.parallel({
             prod: function (next) {
-                prodServer.pack.require({'..': prod_options}, next);
+                prodServer.pack.register([{
+                    plugin: MoonbootsHapi,
+                    options: prod_options
+                }], next);
             },
             dev: function (next) {
-                devServer.pack.require({'..': dev_options}, next);
+                devServer.pack.register([{
+                    plugin: MoonbootsHapi,
+                    options: dev_options
+                }], next);
             }
         }, function (err) {
             if (err) {

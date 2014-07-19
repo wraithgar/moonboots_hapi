@@ -4,6 +4,7 @@ var server, appSource1, jsSource1, cssSource1, appSource2, jsSource2, cssSource2
 var async = require('async');
 var Hapi = require('hapi');
 var Moonboots = require('moonboots');
+var MoonbootsHapi = require('..');
 
 var options1 = {
     appPath: '/app1',
@@ -39,7 +40,10 @@ Lab.experiment('multiple apps happy path', function () {
         server = new Hapi.Server('localhost', 3001);
         async.parallel({
             plugin: function (next) {
-                server.pack.require({ '..': [options1, options2] }, next);
+                server.pack.register([{
+                    plugin: MoonbootsHapi,
+                    options: [options1, options2]
+                }], next);
             },
             getSource: function (next) {
                 appSource1 = moonboots1.htmlSource();

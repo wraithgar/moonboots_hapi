@@ -56,18 +56,23 @@ exports.register = function (plugin, options, next) {
         clientApps.push(clientApp);
         /* App config */
         appOptions.appConfig = appOptions.appConfig || {};
-        if (appOptions.appConfig) {
-            appOptions.appConfig.description = appOptions.appConfig.description || 'Main Moonboots app';
-            appOptions.appConfig.notes = appOptions.appConfig.notes || 'Returns the compiled Moonboots app';
-            appOptions.appConfig.tags = appOptions.appConfig.tags || ['moonboots', 'app'];
-            appOptions.appConfig.bind = appOptions.appConfig.bind || clientApp;
-            appOptions.appConfig.handler = appOptions.appConfig.handler ||
-                function appRouteHandler(request, reply) {
+        appOptions.appConfig.description = appOptions.appConfig.description || 'Main Moonboots app';
+        appOptions.appConfig.notes = appOptions.appConfig.notes || 'Returns the compiled Moonboots app';
+        appOptions.appConfig.tags = appOptions.appConfig.tags || ['moonboots', 'app'];
+        appOptions.appConfig.bind = appOptions.appConfig.bind || clientApp;
+        if (!appOptions.appConfig.handler) {
+            if (appOptions.appConfig.template) {
+                appOptions.appConfig.handler = function appRouteTemplateHandler(request, reply) {
+                    var htmlContext = clientApp.htmlContext();
+                    return reply.view(appOptions.appConfig.template, htmlContext);
+                };
+            } else {
+                appOptions.appConfig.handler =  function appRouteDefaultHandler(request, reply) {
                     var htmlSource = clientApp.htmlSource();
                     reply(htmlSource).header('cache-control', 'no-store');
                 };
+            }
         }
-
         /* JS config */
         appOptions.jsConfig = appOptions.jsConfig || {};
         appOptions.jsConfig.description = appOptions.jsConfig.description || 'Moonboots JS source';

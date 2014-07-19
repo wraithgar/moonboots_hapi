@@ -21,9 +21,10 @@
   },
   "devDependencies": {
     "complexity-report": "^1.0.0",
-    "hapi": "^4.0.0",
-    "lab": "1.x.x",
-    "precommit-hook": "0.3.x"
+    "hapi": "^6.0.0",
+    "jade": "^1.4.2",
+    "lab": "^3.2.1",
+    "precommit-hook": "^0.3.10"
   },
   "scripts": {
     "test": "make test"

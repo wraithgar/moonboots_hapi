@@ -4,6 +4,8 @@ var server, appSource, jsSource, cssSource;
 var async = require('async');
 var Hapi = require('hapi');
 var Moonboots = require('moonboots');
+var MoonbootsHapi = require('..');
+
 var moonboots_hapi_options = {
     developmentMode: true,
     moonboots: {
@@ -29,7 +31,10 @@ Lab.experiment('default happy path tests', function () {
         server = new Hapi.Server('localhost', 3001);
         async.parallel({
             plugin: function (next) {
-                server.pack.require({ '..': moonboots_hapi_options }, next);
+                server.pack.register([{
+                    plugin: MoonbootsHapi,
+                    options: moonboots_hapi_options
+                }], next);
             },
             getSource: function (next) {
                 appSource = moonboots.htmlSource();
