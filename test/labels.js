@@ -4,6 +4,7 @@ var pack, server3001, server3002, appSource;
 var async = require('async');
 var Hapi = require('hapi');
 var Moonboots = require('moonboots');
+var MoonbootsHapi = require('..');
 var options = {
     appPath: '/app',
     labels: ['foo'],
@@ -32,7 +33,7 @@ Lab.experiment('labels parameter', function () {
                 //server3002 = new Hapi.Server('localhost', 3002, {labels: ['bar']});
                 //pack._server(server3001);
                 //pack._server(server3002);
-                pack.require({'..': options }, next);
+                pack.register({ plugin: MoonbootsHapi, options: options }, next);
             },
             getSource: function (next) {
                 appSource = moonboots.htmlSource();
