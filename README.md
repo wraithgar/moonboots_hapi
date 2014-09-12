@@ -49,7 +49,7 @@ for the css route.
 var options = {
     routes: {html: false}
 };
-
+```
 
 You can specify labels for your your routes, simply pass them in as a
 config item (see Hapi documentation for plugin.select for more
