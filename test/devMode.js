@@ -29,8 +29,25 @@ var dev_options = {
         ]
     }
 };
-var devMoonboots = new Moonboots(dev_options.moonboots);
-var prodMoonboots = new Moonboots(prod_options.moonboots);
+
+//Mirror the above moonboots configs to get filenames for testing requests
+var devMoonboots = new Moonboots({
+    developmentMode: true,
+    jsFileName: 'moonboots-hapi-js',
+    cssFileName: 'moonboots-hapi-css',
+    main: __dirname + '/../sample/app/app.js',
+    stylesheets: [
+        __dirname + '/../sample/stylesheets/style.css'
+    ]
+});
+var prodMoonboots = new Moonboots({
+    jsFileName: 'moonboots-hapi-js',
+    cssFileName: 'moonboots-hapi-css',
+    main: __dirname + '/../sample/app/app.js',
+    stylesheets: [
+        __dirname + '/../sample/stylesheets/style.css'
+    ]
+});
 
 Lab.experiment('developmentMode flag properly affects caching', function () {
     Lab.before(function (done) {
@@ -108,6 +125,28 @@ Lab.experiment('developmentMode flag properly affects caching', function () {
             url: '/' + prodMoonboots.cssFileName()
         }, function _prodCss(res) {
             Lab.expect(res.headers['cache-control'], 'cache-control header').to.equal('max-age=31104000, must-revalidate');
+            done();
+        });
+    });
+
+    Lab.test('in development mode, simultaneous requests should all get same code', function (done) {
+        var result1, result2;
+        var getJS = function (done) {
+            devServer.inject({
+                method: 'GET',
+                url: '/' + devMoonboots.jsFileName()
+            }, function _devJs(res) {
+                done(null, res.payload);
+            });
+        };
+
+        async.parallel([
+            getJS,
+            getJS,
+            getJS
+        ], function (err, results) {
+            Lab.expect(results[0].length).to.equal(results[1].length, 'Should be same code');
+            Lab.expect(results[0].length).to.equal(results[2].length, 'Should be same code');
             done();
         });
     });

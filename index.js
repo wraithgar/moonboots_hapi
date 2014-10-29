@@ -1,5 +1,6 @@
 var Moonboots = require('moonboots');
 var async = require('async');
+var lockAsyncFunction = require('./lib/lock-async-function');
 
 function setDefaults(options, next) {
     var baseAppPath;
@@ -73,26 +74,32 @@ exports.register = function (plugin, options, next) {
                 };
             }
         }
+
+
         /* JS config */
+        var getJsSource = lockAsyncFunction(clientApp.jsSource.bind(clientApp));
+
         appOptions.jsConfig = appOptions.jsConfig || {};
         appOptions.jsConfig.description = appOptions.jsConfig.description || 'Moonboots JS source';
         appOptions.jsConfig.notes = appOptions.jsConfig.notes || 'Returns the compiled JS from moonboots';
         appOptions.jsConfig.tags = appOptions.jsConfig.tags || ['moonboots', 'js'];
         appOptions.jsConfig.handler = appOptions.jsConfig.handler ||
             function jsRouteHandler(request, reply) {
-                clientApp.jsSource(function _getJsSource(err, css) {
+                getJsSource(function _getJsSource(err, css) {
                     reply(css).header('content-type', 'text/javascript; charset=utf-8');
                 });
             };
 
         /* CSS config */
+        var getCssSource = lockAsyncFunction(clientApp.cssSource.bind(clientApp));
+
         appOptions.cssConfig = appOptions.cssConfig || {};
         appOptions.cssConfig.description = appOptions.cssConfig.description || 'Moonboots CSS source';
         appOptions.cssConfig.notes = appOptions.cssConfig.notes || 'Returns the compiled CSS from moonboots';
         appOptions.cssConfig.tags = appOptions.cssConfig.tags || ['moonboots', 'css'];
         appOptions.cssConfig.handler = appOptions.cssConfig.handler ||
             function cssRouteHandler(request, reply) {
-                clientApp.cssSource(function _getCssSource(err, css) {
+                getCssSource(function _getCssSource(err, css) {
                     reply(css).header('content-type', 'text/css; charset=utf-8');
                 });
             };
