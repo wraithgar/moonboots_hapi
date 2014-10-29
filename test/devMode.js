@@ -21,7 +21,6 @@ var dev_options = {
     appPath: '/app',
     developmentMode: true,
     moonboots: {
-        developmentMode: true,
         jsFileName: 'moonboots-hapi-js',
         cssFileName: 'moonboots-hapi-css',
         main: __dirname + '/../sample/app/app.js',
@@ -30,8 +29,25 @@ var dev_options = {
         ]
     }
 };
-var devMoonboots = new Moonboots(dev_options.moonboots);
-var prodMoonboots = new Moonboots(prod_options.moonboots);
+
+//Mirror the above moonboots configs to get filenames for testing requests
+var devMoonboots = new Moonboots({
+    developmentMode: true,
+    jsFileName: 'moonboots-hapi-js',
+    cssFileName: 'moonboots-hapi-css',
+    main: __dirname + '/../sample/app/app.js',
+    stylesheets: [
+        __dirname + '/../sample/stylesheets/style.css'
+    ]
+});
+var prodMoonboots = new Moonboots({
+    jsFileName: 'moonboots-hapi-js',
+    cssFileName: 'moonboots-hapi-css',
+    main: __dirname + '/../sample/app/app.js',
+    stylesheets: [
+        __dirname + '/../sample/stylesheets/style.css'
+    ]
+});
 
 Lab.experiment('developmentMode flag properly affects caching', function () {
     Lab.before(function (done) {
