@@ -111,7 +111,7 @@ exports.register = function (plugin, options, next) {
                 expiresIn: appOptions.cachePeriod
             };
         }
-        clientApp.on('log', plugin.log);
+        clientApp.on('log', plugin.log.bind(plugin));
         clientApp.on('ready', function _clientAppReady() {
             if (appOptions.routes.js) {
                 servers.route({
