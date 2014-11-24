@@ -20,10 +20,11 @@
     "moonboots": "^3.0.0"
   },
   "devDependencies": {
+    "code": "^1.2.1",
     "complexity-report": "^1.0.0",
-    "hapi": "^6.0.0",
+    "hapi": "^8.0.0-rc3",
     "jade": "^1.4.2",
-    "lab": "^3.2.1",
+    "lab": "^5.1.0",
     "precommit-hook": "^0.3.10"
   },
   "scripts": {

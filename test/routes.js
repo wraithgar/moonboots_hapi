@@ -1,5 +1,6 @@
 /* Test that the routes return expected data */
-var Lab = require('lab');
+var Lab = exports.lab = require('lab').script();
+var Expect = require('code').expect;
 var server, appSource, jsSource, cssSource;
 var async = require('async');
 var Hapi = require('hapi');
@@ -36,11 +37,12 @@ var moonboots = new Moonboots(options.moonboots);
 
 Lab.experiment('routes', function () {
     Lab.before(function (done) {
-        server = new Hapi.Server('localhost', 3001);
+        server = new Hapi.Server();
+        server.connection({ host: 'localhost', port: 3001 });
         async.parallel({
             plugin: function (next) {
-                server.pack.register([{
-                    plugin: MoonbootsHapi,
+                server.register([{
+                    register: MoonbootsHapi,
                     options: options
                 }], next);
             },
@@ -73,8 +75,8 @@ Lab.experiment('routes', function () {
             method: 'GET',
             url: '/app'
         }, function _getApp(res) {
-            Lab.expect(res.statusCode, 'response code').to.equal(200);
-            Lab.expect(res.payload, 'response body').to.equal(appSource, 'application source');
+            Expect(res.statusCode, 'response code').to.equal(200);
+            Expect(res.payload, 'response body').to.equal(appSource, 'application source');
             done();
         });
     });
@@ -83,8 +85,8 @@ Lab.experiment('routes', function () {
             method: 'GET',
             url: '/moonboots-hapi-js.nonCached.js'
         }, function _getJs(res) {
-            Lab.expect(res.statusCode, 'response code').to.equal(200);
-            Lab.expect(res.payload, 'response body').to.equal(jsSource, 'js source');
+            Expect(res.statusCode, 'response code').to.equal(200);
+            Expect(res.payload, 'response body').to.equal(jsSource, 'js source');
             done();
         });
     });
@@ -93,8 +95,8 @@ Lab.experiment('routes', function () {
             method: 'GET',
             url: '/moonboots-hapi-css.nonCached.css'
         }, function _getJs(res) {
-            Lab.expect(res.statusCode, 'response code').to.equal(200);
-            Lab.expect(res.payload, 'response body').to.equal(cssSource, 'css source');
+            Expect(res.statusCode, 'response code').to.equal(200);
+            Expect(res.payload, 'response body').to.equal(cssSource, 'css source');
             done();
         });
     });
@@ -102,11 +104,12 @@ Lab.experiment('routes', function () {
 
 Lab.experiment('disabling routes', function () {
     Lab.before(function (done) {
-        server = new Hapi.Server('localhost', 3001);
+        server = new Hapi.Server();
+        server.connection({ host: 'localhost', port: 3001 });
         async.parallel({
             plugin: function (next) {
-                server.pack.register([{
-                    plugin: MoonbootsHapi,
+                server.register([{
+                    register: MoonbootsHapi,
                     options: no_html
                 }], next);
             },
@@ -135,7 +138,7 @@ Lab.experiment('disabling routes', function () {
             method: 'GET',
             url: '/app'
         }, function _getApp(res) {
-            Lab.expect(res.statusCode, 'response code').to.equal(404);
+            Expect(res.statusCode, 'response code').to.equal(404);
             done();
         });
     });
@@ -144,8 +147,8 @@ Lab.experiment('disabling routes', function () {
             method: 'GET',
             url: '/moonboots-hapi-js.nonCached.js'
         }, function _getJs(res) {
-            Lab.expect(res.statusCode, 'response code').to.equal(200);
-            Lab.expect(res.payload, 'response body').to.equal(jsSource, 'js source');
+            Expect(res.statusCode, 'response code').to.equal(200);
+            Expect(res.payload, 'response body').to.equal(jsSource, 'js source');
             done();
         });
     });
@@ -154,8 +157,8 @@ Lab.experiment('disabling routes', function () {
             method: 'GET',
             url: '/moonboots-hapi-css.nonCached.css'
         }, function _getJs(res) {
-            Lab.expect(res.statusCode, 'response code').to.equal(200);
-            Lab.expect(res.payload, 'response body').to.equal(cssSource, 'css source');
+            Expect(res.statusCode, 'response code').to.equal(200);
+            Expect(res.payload, 'response body').to.equal(cssSource, 'css source');
             done();
         });
     });

@@ -1,5 +1,6 @@
 /* Test that the template argument is observed */
-var Lab = require('lab');
+var Lab = exports.lab = require('lab').script();
+var Expect = require('code').expect;
 var server;
 var Hapi = require('hapi');
 var MoonbootsHapi = require('..');
@@ -25,9 +26,11 @@ var serverOptions = {
 };
 Lab.experiment('template', function () {
     Lab.before(function (done) {
-        server = new Hapi.Server('localhost', 3001, serverOptions);
-        server.pack.register([{
-            plugin: MoonbootsHapi,
+        server = new Hapi.Server();
+        server.views(serverOptions.views);
+        server.connection({ host: 'localhost', port: 3001 });
+        server.register([{
+            register: MoonbootsHapi,
             options: moonboots_hapi_options
         }], done);
     });
@@ -36,8 +39,8 @@ Lab.experiment('template', function () {
             method: 'GET',
             url: '/'
         }, function (res) {
-            Lab.expect(res.statusCode, 'response code').to.equal(200);
-            Lab.expect(res.payload, 'response body').to.equal('<div>app.nonCached.js</div><span>app.nonCached.js</span>');
+            Expect(res.statusCode, 'response code').to.equal(200);
+            Expect(res.payload, 'response body').to.equal('<div>app.nonCached.js</div><span>app.nonCached.js</span>');
             done();
         });
     });

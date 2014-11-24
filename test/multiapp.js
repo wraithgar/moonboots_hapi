@@ -1,5 +1,6 @@
 /* Test that the routes return expected data */
-var Lab = require('lab');
+var Lab = exports.lab = require('lab').script();
+var Expect = require('code').expect;
 var server, appSource1, jsSource1, cssSource1, appSource2, jsSource2, cssSource2;
 var async = require('async');
 var Hapi = require('hapi');
@@ -37,11 +38,12 @@ var moonboots2 = new Moonboots(options2.moonboots);
 
 Lab.experiment('multiple apps happy path', function () {
     Lab.before(function (done) {
-        server = new Hapi.Server('localhost', 3001);
+        server = new Hapi.Server();
+        server.connection({ host: 'localhost', port: 3001 });
         async.parallel({
             plugin: function (next) {
-                server.pack.register([{
-                    plugin: MoonbootsHapi,
+                server.register([{
+                    register: MoonbootsHapi,
                     options: [options1, options2]
                 }], next);
             },
@@ -87,8 +89,8 @@ Lab.experiment('multiple apps happy path', function () {
             method: 'GET',
             url: '/app1'
         }, function _getApp(res) {
-            Lab.expect(res.statusCode, 'response code').to.equal(200);
-            Lab.expect(res.payload, 'response body').to.equal(appSource1, 'application source');
+            Expect(res.statusCode, 'response code').to.equal(200);
+            Expect(res.payload, 'response body').to.equal(appSource1, 'application source');
             done();
         });
     });
@@ -97,8 +99,8 @@ Lab.experiment('multiple apps happy path', function () {
             method: 'GET',
             url: '/app2'
         }, function _getApp(res) {
-            Lab.expect(res.statusCode, 'response code').to.equal(200);
-            Lab.expect(res.payload, 'response body').to.equal(appSource2, 'application source');
+            Expect(res.statusCode, 'response code').to.equal(200);
+            Expect(res.payload, 'response body').to.equal(appSource2, 'application source');
             done();
         });
     });
@@ -107,8 +109,8 @@ Lab.experiment('multiple apps happy path', function () {
             method: 'GET',
             url: '/moonboots-hapi-js1.nonCached.js'
         }, function _getJs(res) {
-            Lab.expect(res.statusCode, 'response code').to.equal(200);
-            Lab.expect(res.payload, 'response body').to.equal(jsSource1, 'js source');
+            Expect(res.statusCode, 'response code').to.equal(200);
+            Expect(res.payload, 'response body').to.equal(jsSource1, 'js source');
             done();
         });
     });
@@ -117,8 +119,8 @@ Lab.experiment('multiple apps happy path', function () {
             method: 'GET',
             url: '/moonboots-hapi-js2.nonCached.js'
         }, function _getJs(res) {
-            Lab.expect(res.statusCode, 'response code').to.equal(200);
-            Lab.expect(res.payload, 'response body').to.equal(jsSource2, 'js source');
+            Expect(res.statusCode, 'response code').to.equal(200);
+            Expect(res.payload, 'response body').to.equal(jsSource2, 'js source');
             done();
         });
     });
@@ -127,8 +129,8 @@ Lab.experiment('multiple apps happy path', function () {
             method: 'GET',
             url: '/moonboots-hapi-css1.nonCached.css'
         }, function _getJs(res) {
-            Lab.expect(res.statusCode, 'response code').to.equal(200);
-            Lab.expect(res.payload, 'response body').to.equal(cssSource1, 'css source');
+            Expect(res.statusCode, 'response code').to.equal(200);
+            Expect(res.payload, 'response body').to.equal(cssSource1, 'css source');
             done();
         });
     });
@@ -137,33 +139,33 @@ Lab.experiment('multiple apps happy path', function () {
             method: 'GET',
             url: '/moonboots-hapi-css2.nonCached.css'
         }, function _getJs(res) {
-            Lab.expect(res.statusCode, 'response code').to.equal(200);
-            Lab.expect(res.payload, 'response body').to.equal(cssSource2, 'css source');
+            Expect(res.statusCode, 'response code').to.equal(200);
+            Expect(res.payload, 'response body').to.equal(cssSource2, 'css source');
             done();
         });
     });
     Lab.test('app1 clientConfig is exposed', function (done) {
         server.plugins.moonboots_hapi.clientConfig(0, function (config) {
-            Lab.expect(config, 'client config').to.equal(options1, 'moonboots-hapi config');
+            Expect(config, 'client config').to.equal(options1, 'moonboots-hapi config');
             done();
         });
     });
     Lab.test('app2 clientConfig is exposed', function (done) {
         server.plugins.moonboots_hapi.clientConfig(1, function (config) {
-            Lab.expect(config, 'client config').to.equal(options2, 'moonboots-hapi config');
+            Expect(config, 'client config').to.equal(options2, 'moonboots-hapi config');
             done();
         });
     });
     Lab.test('app1 clientApp is exposed', function (done) {
         server.plugins.moonboots_hapi.clientApp(0, function (clientApp) {
-            Lab.expect(clientApp, 'client app').to.be.instanceOf(Moonboots);
+            Expect(clientApp, 'client app').to.be.instanceOf(Moonboots);
             //TODO confirm this is the right app maybe?
             done();
         });
     });
     Lab.test('app2 clientApp is exposed', function (done) {
         server.plugins.moonboots_hapi.clientApp(1, function (clientApp) {
-            Lab.expect(clientApp, 'client app').to.be.instanceOf(Moonboots);
+            Expect(clientApp, 'client app').to.be.instanceOf(Moonboots);
             //TODO confirm this is the right app maybe?
             done();
         });

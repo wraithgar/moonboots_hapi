@@ -42,7 +42,6 @@ function setDefaults(options, next) {
 }
 
 exports.register = function (plugin, options, next) {
-    var HapiError = plugin.hapi.Error;
     var clientApps = [];
     var clientConfigs = (options instanceof Array) ? options : [options];
 

@@ -1,5 +1,6 @@
 /* Test for developmentMode flags doing what they should */
-var Lab = require('lab');
+var Lab = exports.lab = require('lab').script();
+var Expect = require('code').expect;
 var prodServer, devServer, jsPath, cssPath;
 var async = require('async');
 var Hapi = require('hapi');
@@ -51,18 +52,20 @@ var prodMoonboots = new Moonboots({
 
 Lab.experiment('developmentMode flag properly affects caching', function () {
     Lab.before(function (done) {
-        prodServer = new Hapi.Server('localhost', 3001);
-        devServer = new Hapi.Server('localhost', 3002);
+        prodServer = new Hapi.Server();
+        prodServer.connection({ host: 'localhost', port: 3001 });
+        devServer = new Hapi.Server();
+        devServer.connection({ host: 'localhost', port: 3002 });
         async.parallel({
             prod: function (next) {
-                prodServer.pack.register([{
-                    plugin: MoonbootsHapi,
+                prodServer.register([{
+                    register: MoonbootsHapi,
                     options: prod_options
                 }], next);
             },
             dev: function (next) {
-                devServer.pack.register([{
-                    plugin: MoonbootsHapi,
+                devServer.register([{
+                    register: MoonbootsHapi,
                     options: dev_options
                 }], next);
             }
@@ -79,7 +82,7 @@ Lab.experiment('developmentMode flag properly affects caching', function () {
             method: 'GET',
             url: '/app',
         }, function _devApp(res) {
-            Lab.expect(res.headers['cache-control'], 'cache-control header').to.equal('no-store');
+            Expect(res.headers['cache-control'], 'cache-control header').to.equal('no-store');
             done();
         });
     });
@@ -88,7 +91,7 @@ Lab.experiment('developmentMode flag properly affects caching', function () {
             method: 'GET',
             url: '/' + devMoonboots.jsFileName()
         }, function _devJs(res) {
-            Lab.expect(res.headers['cache-control'], 'cache-control header').to.equal('no-cache');
+            Expect(res.headers['cache-control'], 'cache-control header').to.equal('no-cache');
             done();
         });
     });
@@ -97,7 +100,7 @@ Lab.experiment('developmentMode flag properly affects caching', function () {
             method: 'GET',
             url: '/' + devMoonboots.cssFileName()
         }, function _devCss(res) {
-            Lab.expect(res.headers['cache-control'], 'cache-control header').to.equal('no-cache');
+            Expect(res.headers['cache-control'], 'cache-control header').to.equal('no-cache');
             done();
         });
     });
@@ -106,7 +109,7 @@ Lab.experiment('developmentMode flag properly affects caching', function () {
             method: 'GET',
             url: '/app'
         }, function _prodApp(res) {
-            Lab.expect(res.headers['cache-control'], 'cache-control header').to.equal('no-store');
+            Expect(res.headers['cache-control'], 'cache-control header').to.equal('no-store');
             done();
         });
     });
@@ -115,7 +118,7 @@ Lab.experiment('developmentMode flag properly affects caching', function () {
             method: 'GET',
             url: '/' + prodMoonboots.jsFileName()
         }, function _prodJs(res) {
-            Lab.expect(res.headers['cache-control'], 'cache-control header').to.equal('max-age=31104000, must-revalidate');
+            Expect(res.headers['cache-control'], 'cache-control header').to.equal('max-age=31104000, must-revalidate');
             done();
         });
     });
@@ -124,7 +127,7 @@ Lab.experiment('developmentMode flag properly affects caching', function () {
             method: 'GET',
             url: '/' + prodMoonboots.cssFileName()
         }, function _prodCss(res) {
-            Lab.expect(res.headers['cache-control'], 'cache-control header').to.equal('max-age=31104000, must-revalidate');
+            Expect(res.headers['cache-control'], 'cache-control header').to.equal('max-age=31104000, must-revalidate');
             done();
         });
     });
@@ -145,8 +148,8 @@ Lab.experiment('developmentMode flag properly affects caching', function () {
             getJS,
             getJS
         ], function (err, results) {
-            Lab.expect(results[0].length).to.equal(results[1].length, 'Should be same code');
-            Lab.expect(results[0].length).to.equal(results[2].length, 'Should be same code');
+            Expect(results[0].length).to.equal(results[1].length, 'Should be same code');
+            Expect(results[0].length).to.equal(results[2].length, 'Should be same code');
             done();
         });
     });
