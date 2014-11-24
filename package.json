@@ -16,16 +16,16 @@
   },
   "main": "index.js",
   "dependencies": {
-    "async": "^0.7.0",
     "moonboots": "^3.0.0"
   },
   "devDependencies": {
+    "async": "^0.7.0",
     "code": "^1.2.1",
-    "complexity-report": "^1.0.0",
     "hapi": "^8.0.0-rc3",
     "jade": "^1.4.2",
+    "jshint": "^2.5.10",
     "lab": "^5.1.0",
-    "precommit-hook": "^0.3.10"
+    "precommit-hook": "^1.0.7"
   },
   "scripts": {
     "test": "make test"

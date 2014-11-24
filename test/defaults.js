@@ -93,13 +93,13 @@ Lab.experiment('default happy path tests', function () {
         });
     });
     Lab.test('clientConfig is exposed', function (done) {
-        server.plugins.moonboots_hapi.clientConfig(0, function (config) {
+        server.plugins.moonboots_hapi.clientConfig(function (config) {
             Expect(config, 'client config').to.equal(moonboots_hapi_options, 'moonboots-hapi config');
             done();
         });
     });
     Lab.test('clientApp is exposed', function (done) {
-        server.plugins.moonboots_hapi.clientApp(0, function (clientApp) {
+        server.plugins.moonboots_hapi.clientApp(function (clientApp) {
             Expect(clientApp, 'client app').to.be.instanceOf(Moonboots);
             done();
         });

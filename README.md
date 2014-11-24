@@ -142,23 +142,6 @@ in hapi, and given the following context:
 }
 ```
 
-## Multiple mooonboots on one server
-
-You can register multiple moonboots apps for a single hapi server like
-so:
-
-1. Pass in an array of moonboots configs instead of a single config.
-2. Make sure that each config provides unique `appPath` or hapi will
-   complain that the paths conflict.
-
-Example of registering multiple apps:
-
-```js
-server.pack.require({moonboots_hapi: [moonboots_config1, moonboots_config2]}, function (er) {
-    server.start();
-});
-```
-
 ## Helpers
 
 There are currently two methods exposed from the plugin

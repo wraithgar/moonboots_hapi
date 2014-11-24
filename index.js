@@ -1,5 +1,4 @@
 var Moonboots = require('moonboots');
-var async = require('async');
 var lockAsyncFunction = require('./lib/lock-async-function');
 
 function setDefaults(options, next) {
@@ -41,109 +40,102 @@ function setDefaults(options, next) {
     return options;
 }
 
-exports.register = function (plugin, options, next) {
-    var clientApps = [];
-    var clientConfigs = (options instanceof Array) ? options : [options];
+exports.register = function (plugin, clientConfig, next) {
+    var clientApp;
+    var appOptions = setDefaults(clientConfig);
+    var servers = (appOptions.labels) ? plugin.select(appOptions.labels) : plugin;
+    if (appOptions.logLevel !== 'none') {
+        plugin.log(['plugin', 'moonboots-hapi', appOptions.logLevel], {message: 'creating moonboots app', appPath: appOptions.appPath});
+    }
+    clientApp = new Moonboots(appOptions.moonboots);
 
-    async.each(clientConfigs, function _eachApp(clientConfig, cb) {
-        var clientApp;
-        var appOptions = setDefaults(clientConfig);
-        var servers = (appOptions.labels) ? plugin.select(appOptions.labels) : plugin;
+    /* App config */
+    appOptions.appConfig = appOptions.appConfig || {};
+    appOptions.appConfig.description = appOptions.appConfig.description || 'Main Moonboots app';
+    appOptions.appConfig.notes = appOptions.appConfig.notes || 'Returns the compiled Moonboots app';
+    appOptions.appConfig.tags = appOptions.appConfig.tags || ['moonboots', 'app'];
+    appOptions.appConfig.bind = appOptions.appConfig.bind || clientApp;
+    if (!appOptions.appConfig.handler) {
+        if (appOptions.appTemplate) {
+            appOptions.appConfig.handler = function appRouteTemplateHandler(request, reply) {
+                var htmlContext = clientApp.htmlContext();
+                return reply.view(appOptions.appTemplate, htmlContext);
+            };
+        } else {
+            appOptions.appConfig.handler =  function appRouteDefaultHandler(request, reply) {
+                var htmlSource = clientApp.htmlSource();
+                reply(htmlSource).header('cache-control', 'no-store');
+            };
+        }
+    }
+
+
+    /* JS config */
+    var getJsSource = lockAsyncFunction(clientApp.jsSource.bind(clientApp));
+
+    appOptions.jsConfig = appOptions.jsConfig || {};
+    appOptions.jsConfig.description = appOptions.jsConfig.description || 'Moonboots JS source';
+    appOptions.jsConfig.notes = appOptions.jsConfig.notes || 'Returns the compiled JS from moonboots';
+    appOptions.jsConfig.tags = appOptions.jsConfig.tags || ['moonboots', 'js'];
+    appOptions.jsConfig.handler = appOptions.jsConfig.handler ||
+        function jsRouteHandler(request, reply) {
+            getJsSource(function _getJsSource(err, css) {
+                reply(css).header('content-type', 'text/javascript; charset=utf-8');
+            });
+        };
+
+    /* CSS config */
+    var getCssSource = lockAsyncFunction(clientApp.cssSource.bind(clientApp));
+
+    appOptions.cssConfig = appOptions.cssConfig || {};
+    appOptions.cssConfig.description = appOptions.cssConfig.description || 'Moonboots CSS source';
+    appOptions.cssConfig.notes = appOptions.cssConfig.notes || 'Returns the compiled CSS from moonboots';
+    appOptions.cssConfig.tags = appOptions.cssConfig.tags || ['moonboots', 'css'];
+    appOptions.cssConfig.handler = appOptions.cssConfig.handler ||
+        function cssRouteHandler(request, reply) {
+            getCssSource(function _getCssSource(err, css) {
+                reply(css).header('content-type', 'text/css; charset=utf-8');
+            });
+        };
+    if (!appOptions.developmentMode) {
+        appOptions.jsConfig.cache = {
+            expiresIn: appOptions.cachePeriod
+        };
+        appOptions.cssConfig.cache = {
+            expiresIn: appOptions.cachePeriod
+        };
+    }
+    clientApp.on('log', plugin.log.bind(plugin));
+    clientApp.on('ready', function _clientAppReady() {
+        if (appOptions.routes.js) {
+            servers.route({
+                method: 'get',
+                path: '/' + encodeURIComponent(clientApp.jsFileName()),
+                config: appOptions.jsConfig
+            });
+        }
+        if (appOptions.routes.css) {
+            servers.route({
+                method: 'get',
+                path: '/' + encodeURIComponent(clientApp.cssFileName()),
+                config: appOptions.cssConfig
+            });
+        }
+        if (appOptions.routes.html) {
+            servers.route({
+                method: 'get',
+                path: appOptions.appPath,
+                config: appOptions.appConfig
+            });
+        }
         if (appOptions.logLevel !== 'none') {
-            plugin.log(['plugin', 'moonboots-hapi', appOptions.logLevel], {message: 'creating moonboots app', appPath: appOptions.appPath});
+            plugin.log(['moonboots-hapi', appOptions.logLevel], {message: 'moonboots app ready', appPath: appOptions.appPath});
         }
-        clientApp = new Moonboots(appOptions.moonboots);
-        clientApps.push(clientApp);
-        /* App config */
-        appOptions.appConfig = appOptions.appConfig || {};
-        appOptions.appConfig.description = appOptions.appConfig.description || 'Main Moonboots app';
-        appOptions.appConfig.notes = appOptions.appConfig.notes || 'Returns the compiled Moonboots app';
-        appOptions.appConfig.tags = appOptions.appConfig.tags || ['moonboots', 'app'];
-        appOptions.appConfig.bind = appOptions.appConfig.bind || clientApp;
-        if (!appOptions.appConfig.handler) {
-            if (appOptions.appTemplate) {
-                appOptions.appConfig.handler = function appRouteTemplateHandler(request, reply) {
-                    var htmlContext = clientApp.htmlContext();
-                    return reply.view(appOptions.appTemplate, htmlContext);
-                };
-            } else {
-                appOptions.appConfig.handler =  function appRouteDefaultHandler(request, reply) {
-                    var htmlSource = clientApp.htmlSource();
-                    reply(htmlSource).header('cache-control', 'no-store');
-                };
-            }
-        }
-
-
-        /* JS config */
-        var getJsSource = lockAsyncFunction(clientApp.jsSource.bind(clientApp));
-
-        appOptions.jsConfig = appOptions.jsConfig || {};
-        appOptions.jsConfig.description = appOptions.jsConfig.description || 'Moonboots JS source';
-        appOptions.jsConfig.notes = appOptions.jsConfig.notes || 'Returns the compiled JS from moonboots';
-        appOptions.jsConfig.tags = appOptions.jsConfig.tags || ['moonboots', 'js'];
-        appOptions.jsConfig.handler = appOptions.jsConfig.handler ||
-            function jsRouteHandler(request, reply) {
-                getJsSource(function _getJsSource(err, css) {
-                    reply(css).header('content-type', 'text/javascript; charset=utf-8');
-                });
-            };
-
-        /* CSS config */
-        var getCssSource = lockAsyncFunction(clientApp.cssSource.bind(clientApp));
-
-        appOptions.cssConfig = appOptions.cssConfig || {};
-        appOptions.cssConfig.description = appOptions.cssConfig.description || 'Moonboots CSS source';
-        appOptions.cssConfig.notes = appOptions.cssConfig.notes || 'Returns the compiled CSS from moonboots';
-        appOptions.cssConfig.tags = appOptions.cssConfig.tags || ['moonboots', 'css'];
-        appOptions.cssConfig.handler = appOptions.cssConfig.handler ||
-            function cssRouteHandler(request, reply) {
-                getCssSource(function _getCssSource(err, css) {
-                    reply(css).header('content-type', 'text/css; charset=utf-8');
-                });
-            };
-        if (!appOptions.developmentMode) {
-            appOptions.jsConfig.cache = {
-                expiresIn: appOptions.cachePeriod
-            };
-            appOptions.cssConfig.cache = {
-                expiresIn: appOptions.cachePeriod
-            };
-        }
-        clientApp.on('log', plugin.log.bind(plugin));
-        clientApp.on('ready', function _clientAppReady() {
-            if (appOptions.routes.js) {
-                servers.route({
-                    method: 'get',
-                    path: '/' + encodeURIComponent(clientApp.jsFileName()),
-                    config: appOptions.jsConfig
-                });
-            }
-            if (appOptions.routes.css) {
-                servers.route({
-                    method: 'get',
-                    path: '/' + encodeURIComponent(clientApp.cssFileName()),
-                    config: appOptions.cssConfig
-                });
-            }
-            if (appOptions.routes.html) {
-                servers.route({
-                    method: 'get',
-                    path: appOptions.appPath,
-                    config: appOptions.appConfig
-                });
-            }
-            if (appOptions.logLevel !== 'none') {
-                plugin.log(['moonboots-hapi', appOptions.logLevel], {message: 'moonboots app ready', appPath: appOptions.appPath});
-            }
-            cb();
+        plugin.expose('clientConfig', function _getClientConfig(cb) {
+            return cb(appOptions);
         });
-    }, function _clientsConfigured() {
-        plugin.expose('clientConfig', function _getClientConfig(key, cb) {
-            return cb(clientConfigs[key]);
-        });
-        plugin.expose('clientApp', function _getClientApp(key, cb) {
-            return cb(clientApps[key]);
+        plugin.expose('clientApp', function _getClientApp(cb) {
+            return cb(clientApp);
         });
         next();
     });
