@@ -21,7 +21,7 @@
   "devDependencies": {
     "async": "^0.7.0",
     "code": "^1.2.1",
-    "hapi": "^8.0.0-rc3",
+    "hapi": "^8.0.0",
     "jade": "^1.4.2",
     "jshint": "^2.5.10",
     "lab": "^5.1.0",
