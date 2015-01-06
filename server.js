@@ -1,4 +1,6 @@
 var Hapi = require('hapi');
+var MoonbootsHapi = require('./');
+
 var moonboots_options = {
     main: __dirname + '/sample/app/app.js',
     stylesheets: [
@@ -11,9 +13,10 @@ var config = {
     appPath: '/app/{appPath*}'
 };
 
-var server = new Hapi.Server('localhost', 3000);
+var server = new Hapi.Server();
+server.connection({ host: 'localhost', port: 3000 });
 
-server.pack.events.on('log', function (event, tags) {
+server.on('log', function (event, tags) {
     console.log(event);
 });
 
@@ -25,7 +28,10 @@ server.route({
     }
 });
 
-server.pack.require({ '.': config }, function (err) {
+server.register({
+    register: MoonbootsHapi,
+    options: config
+}, function (err) {
     if (err) throw err;
 
     server.start(function () {

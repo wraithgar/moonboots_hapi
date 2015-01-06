@@ -14,6 +14,7 @@ need to pass in a server parameter.
 
 ```js
 var Hapi = require('hapi');
+var MoonbootsHapi = require('moonboots-hapi');
 
 var config = {
     appPath: '/myapp/{clientPath*}',
@@ -30,9 +31,13 @@ var config = {
 };
 
 var server = new Hapi.Server();
+server.connection({ host: 'localhost', port: 3001 });
 
-server.pack.require({moonboots_hapi: config}, function (er) {
-    server.start();
+server.register({
+    register: MoonbootsHapi,
+    options: config
+}, server.start);
+;
 });
 ```
 
@@ -91,7 +96,6 @@ default to _app.js_ and _app.css_ respectively otherwise.
 
 ```js
 var Hapi = require('hapi');
-var HapiSession = require('hapi-session');
 
 var config = {
     appPath: '/app',
@@ -111,6 +115,8 @@ var config = {
 };
 
 var server = new Hapi.Server();
+server.connection({ host: 'localhost', port: 3000 });
+
 server.route({
     method: 'get',
     path: '/',
@@ -118,13 +124,11 @@ server.route({
         reply().redirect('/app');
     }
 });
-server.auth('session', {
-    implementation: new HapiSession(server, session_options)
-});
 
-server.pack.require({moonboots_hapi: config}, function (err) {
-    server.start();
-});
+server.register({
+    register: MoonbootsHapi,
+    options: config
+}, server.start);
 ```
 
 
@@ -140,19 +144,6 @@ in hapi, and given the following context:
     jsFileName: '/link/to/app.js',
     cssFileName: '/link/to/app.css'
 }
-```
-
-## Helpers
-
-There are currently two methods exposed from the plugin
-
-```js
-server.plugins['moonboots_hapi'].clientConfig(0, function (config) {
-    console.log(config); //Will be the first client config
-});
-server.plugins['moonboots_hapi'].clientApp(0, function (clientApp) {
-    console.log(clientApp); //Will be the first moonboots app
-});
 ```
 
 ## Test
