@@ -28,7 +28,8 @@
     "precommit-hook": "^1.0.7"
   },
   "scripts": {
-    "test": "make test"
+    "test": "node node_modules/lab/bin/lab -c",
+    "test-no-cov": "node node_modules/lab/bin/lab"
   },
   "license": "MIT"
 }
