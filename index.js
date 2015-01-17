@@ -79,8 +79,8 @@ exports.register = function (plugin, clientConfig, next) {
     appOptions.jsConfig.tags = appOptions.jsConfig.tags || ['moonboots', 'js'];
     appOptions.jsConfig.handler = appOptions.jsConfig.handler ||
         function jsRouteHandler(request, reply) {
-            getJsSource(function _getJsSource(err, css) {
-                reply(css).header('content-type', 'text/javascript; charset=utf-8');
+            getJsSource(function _getJsSource(err, js) {
+                reply(js).header('content-type', 'text/javascript; charset=utf-8');
             });
         };
 
