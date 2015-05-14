@@ -16,7 +16,7 @@
   },
   "main": "index.js",
   "dependencies": {
-    "moonboots": "^3.0.0"
+    "moonboots": "^4.0.1"
   },
   "devDependencies": {
     "async": "^0.7.0",
