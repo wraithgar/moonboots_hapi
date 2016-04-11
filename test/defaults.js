@@ -67,8 +67,8 @@ Lab.experiment('default happy path tests', function () {
             method: 'GET',
             url: '/app'
         }, function _getApp(res) {
-            Expect(res.statusCode, 'response code').to.equal(200);
-            Expect(res.payload, 'response body').to.equal(appSource, 'application source');
+            Expect(res.statusCode).to.equal(200);
+            Expect(res.payload).to.equal(appSource);
             done();
         });
     });
@@ -77,8 +77,8 @@ Lab.experiment('default happy path tests', function () {
             method: 'GET',
             url: '/app.nonCached.js'
         }, function _getJs(res) {
-            Expect(res.statusCode, 'response code').to.equal(200);
-            Expect(res.payload, 'response body').to.equal(jsSource, 'js source');
+            Expect(res.statusCode).to.equal(200);
+            Expect(res.payload).to.equal(jsSource);
             done();
         });
     });
@@ -87,20 +87,20 @@ Lab.experiment('default happy path tests', function () {
             method: 'GET',
             url: '/app.nonCached.css'
         }, function _getJs(res) {
-            Expect(res.statusCode, 'response code').to.equal(200);
-            Expect(res.payload, 'response body').to.equal(cssSource, 'css source');
+            Expect(res.statusCode).to.equal(200);
+            Expect(res.payload).to.equal(cssSource);
             done();
         });
     });
     Lab.test('clientConfig is exposed', function (done) {
         server.plugins.moonboots_hapi.clientConfig(function (config) {
-            Expect(config, 'client config').to.equal(moonboots_hapi_options, 'moonboots-hapi config');
+            Expect(config).to.equal(moonboots_hapi_options);
             done();
         });
     });
     Lab.test('clientApp is exposed', function (done) {
         server.plugins.moonboots_hapi.clientApp(function (clientApp) {
-            Expect(clientApp, 'client app').to.be.instanceOf(Moonboots);
+            Expect(clientApp).to.be.instanceOf(Moonboots);
             done();
         });
     });
