@@ -42,6 +42,7 @@ function setDefaults(options, next) {
 
 exports.register = function (plugin, clientConfig, next) {
     var clientApp;
+    var lastModified = new Date();
     var appOptions = setDefaults(clientConfig);
     var servers = (appOptions.labels) ? plugin.select(appOptions.labels) : plugin;
     if (appOptions.logLevel !== 'none') {
@@ -80,7 +81,12 @@ exports.register = function (plugin, clientConfig, next) {
     appOptions.jsConfig.handler = appOptions.jsConfig.handler ||
         function jsRouteHandler(request, reply) {
             getJsSource(function _getJsSource(err, js) {
+              if (!appOptions.developmentMode) {
+                reply(js).header('content-type', 'text/javascript; charset=utf-8').header('last-modified', lastModified);
+              }
+              else {
                 reply(js).header('content-type', 'text/javascript; charset=utf-8');
+              }
             });
         };
 
@@ -94,7 +100,12 @@ exports.register = function (plugin, clientConfig, next) {
     appOptions.cssConfig.handler = appOptions.cssConfig.handler ||
         function cssRouteHandler(request, reply) {
             getCssSource(function _getCssSource(err, css) {
+              if (!appOptions.developmentMode){
+                reply(css).header('content-type', 'text/css; charset=utf-8').header('last-modified', lastModified);
+              }
+              else {
                 reply(css).header('content-type', 'text/css; charset=utf-8');
+              }
             });
         };
     if (!appOptions.developmentMode) {

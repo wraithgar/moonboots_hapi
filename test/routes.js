@@ -76,7 +76,7 @@ Lab.experiment('routes', function () {
             url: '/app'
         }, function _getApp(res) {
             Expect(res.statusCode, 'response code').to.equal(200);
-            Expect(res.payload, 'response body').to.equal(appSource, 'application source');
+            Expect(res.payload, 'response body').to.equal(appSource);
             done();
         });
     });
@@ -86,7 +86,7 @@ Lab.experiment('routes', function () {
             url: '/moonboots-hapi-js.nonCached.js'
         }, function _getJs(res) {
             Expect(res.statusCode, 'response code').to.equal(200);
-            Expect(res.payload, 'response body').to.equal(jsSource, 'js source');
+            Expect(res.payload, 'response body').to.equal(jsSource);
             done();
         });
     });
@@ -96,7 +96,7 @@ Lab.experiment('routes', function () {
             url: '/moonboots-hapi-css.nonCached.css'
         }, function _getJs(res) {
             Expect(res.statusCode, 'response code').to.equal(200);
-            Expect(res.payload, 'response body').to.equal(cssSource, 'css source');
+            Expect(res.payload, 'response body').to.equal(cssSource);
             done();
         });
     });
@@ -148,7 +148,7 @@ Lab.experiment('disabling routes', function () {
             url: '/moonboots-hapi-js.nonCached.js'
         }, function _getJs(res) {
             Expect(res.statusCode, 'response code').to.equal(200);
-            Expect(res.payload, 'response body').to.equal(jsSource, 'js source');
+            Expect(res.payload, 'response body').to.equal(jsSource);
             done();
         });
     });
@@ -158,7 +158,7 @@ Lab.experiment('disabling routes', function () {
             url: '/moonboots-hapi-css.nonCached.css'
         }, function _getJs(res) {
             Expect(res.statusCode, 'response code').to.equal(200);
-            Expect(res.payload, 'response body').to.equal(cssSource, 'css source');
+            Expect(res.payload, 'response body').to.equal(cssSource);
             done();
         });
     });

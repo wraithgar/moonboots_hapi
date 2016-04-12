@@ -83,6 +83,7 @@ Lab.experiment('developmentMode flag properly affects caching', function () {
             url: '/app',
         }, function _devApp(res) {
             Expect(res.headers['cache-control'], 'cache-control header').to.equal('no-store');
+            Expect(res.headers['last-modified'], 'last-modified header').to.be.undefined();
             done();
         });
     });
@@ -92,6 +93,7 @@ Lab.experiment('developmentMode flag properly affects caching', function () {
             url: '/' + devMoonboots.jsFileName()
         }, function _devJs(res) {
             Expect(res.headers['cache-control'], 'cache-control header').to.equal('no-cache');
+            Expect(res.headers['last-modified'], 'last-modified header').to.be.undefined();
             done();
         });
     });
@@ -101,6 +103,7 @@ Lab.experiment('developmentMode flag properly affects caching', function () {
             url: '/' + devMoonboots.cssFileName()
         }, function _devCss(res) {
             Expect(res.headers['cache-control'], 'cache-control header').to.equal('no-cache');
+            Expect(res.headers['last-modified'], 'last-modified header').to.be.undefined();
             done();
         });
     });
@@ -110,6 +113,7 @@ Lab.experiment('developmentMode flag properly affects caching', function () {
             url: '/app'
         }, function _prodApp(res) {
             Expect(res.headers['cache-control'], 'cache-control header').to.equal('no-store');
+            Expect(res.headers['last-modified'], 'last-modified header').to.be.undefined();
             done();
         });
     });
@@ -131,6 +135,33 @@ Lab.experiment('developmentMode flag properly affects caching', function () {
             done();
         });
     });
+    
+    Lab.test('prodJs last-modified', function (done) {
+        prodServer.inject({
+            method: 'GET',
+            url: '/' + prodMoonboots.jsFileName()
+        }, function _prodJs(res) {
+          setTimeout(function(){ 
+              prodServer.inject({
+                method: 'GET',
+                url: '/' + prodMoonboots.jsFileName()
+            }, function _prodJs2(res2) {              
+              Expect(res.headers['last-modified']).to.equal(res2.headers['last-modified']);
+              done();
+          });
+        },1500);
+      });
+    });
+    
+    Lab.test('prodJs', function (done) {
+        prodServer.inject({
+            method: 'GET',
+            url: '/' + prodMoonboots.jsFileName()
+        }, function _prodJs(res) {
+            Expect(res.headers['cache-control'], 'cache-control header').to.equal('max-age=31104000, must-revalidate');
+            done();
+        });
+    });
 
     Lab.test('in development mode, simultaneous requests should all get same code', function (done) {
         var result1, result2;
@@ -148,8 +179,8 @@ Lab.experiment('developmentMode flag properly affects caching', function () {
             getJS,
             getJS
         ], function (err, results) {
-            Expect(results[0].length).to.equal(results[1].length, 'Should be same code');
-            Expect(results[0].length).to.equal(results[2].length, 'Should be same code');
+            Expect(results[0].length).to.equal(results[1].length);
+            Expect(results[0].length).to.equal(results[2].length);
             done();
         });
     });

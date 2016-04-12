@@ -54,7 +54,7 @@ Lab.experiment('labels parameter', function () {
             url: '/app'
         }, function _getApp(res) {
             Expect(res.statusCode, 'response code').to.equal(200);
-            Expect(res.payload, 'response body').to.equal(appSource, 'application source');
+            Expect(res.payload, 'response body').to.equal(appSource);
             done();
         });
     });
