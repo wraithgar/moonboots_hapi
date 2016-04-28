@@ -25,41 +25,44 @@ var moonboots_options = {
     ]
 };
 
-var moonboots = new Moonboots(moonboots_options);
+var moonboots;
 
 Lab.experiment('default happy path tests', function () {
     Lab.before(function (done) {
-        server = new Hapi.Server();
-        server.connection({ host: 'localhost', port: 3001 });
-        async.parallel({
+        moonboots = new Moonboots(moonboots_options);
+        moonboots.on('ready', function () {
+          server = new Hapi.Server();
+          server.connection({ host: 'localhost', port: 3001 });
+          async.parallel({
             plugin: function (next) {
-                server.register([{
-                    register: MoonbootsHapi,
-                    options: moonboots_hapi_options
-                }], next);
+              server.register([{
+                register: MoonbootsHapi,
+                options: moonboots_hapi_options
+              }], next);
             },
             getSource: function (next) {
-                appSource = moonboots.htmlSource();
-                next();
+              appSource = moonboots.htmlSource();
+              next();
             },
             getJs: function (next) {
-                moonboots.jsSource(function _getJsSource(err, js) {
-                    jsSource = js;
-                    next(err);
-                });
+              moonboots.jsSource(function _getJsSource(err, js) {
+                jsSource = js;
+                next(err);
+              });
             },
             getCss: function (next) {
-                moonboots.cssSource(function _getCssSource(err, css) {
-                    cssSource = css;
-                    next(err);
-                });
+              moonboots.cssSource(function _getCssSource(err, css) {
+                cssSource = css;
+                next(err);
+              });
             }
-        }, function (err) {
+          }, function (err) {
             if (err) {
-                process.stderr.write('Unable to setUp tests', err, '\n');
-                process.exit(1);
+              process.stderr.write('Unable to setUp tests', err, '\n');
+              process.exit(1);
             }
             done();
+          });
         });
     });
     Lab.test('serves app where expected', function (done) {
